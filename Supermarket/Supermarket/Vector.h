@@ -282,6 +282,9 @@ inline bool Vector<T>::operator!=(const Vector<T>& other) const
 template<typename T>
 inline void Vector<T>::resize(size_t capacity)
 {
+	if (capacity <= this->capacity_)
+		return;
+
 	this->capacity_ = capacity;
 
 	T* newData = new T[capacity];
