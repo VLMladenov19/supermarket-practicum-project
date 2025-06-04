@@ -23,6 +23,7 @@ public:
 	String toLower() const;
 	String toUpper() const;
 	size_t toNumber() const;
+	static String toString(size_t num);
 
 	String& append(const String& other);
 	String& append(const char* data);
@@ -43,6 +44,8 @@ public:
 	size_t find(const char* str, size_t pos = 0) const;
 
 	Vector<String> split(char delimeter = ' ') const;
+
+	String& reverse();
 
 	friend void swap(String& lhs, String& rhs);
 

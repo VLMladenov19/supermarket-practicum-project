@@ -144,10 +144,28 @@ size_t String::toNumber() const
 			}
 			break;
 		}
-		result = result * 10 + (size_t)(this->data_[i] - '0');
+		result = result * 10 + (this->data_[i] - '0');
 		changed = true;
 	}
 
+	return result;
+}
+
+String String::toString(size_t num)
+{
+	if (num == 0)
+	{
+		return String("0");
+	}
+
+	String result;
+	while (num)
+	{
+		result.push_back(num % 10 + '0');
+		num /= 10;
+	}
+
+	result.reverse();
 	return result;
 }
 
@@ -280,17 +298,18 @@ String& String::erase(size_t pos, size_t len)
 		return *this;
 	}
 
-	if (this->size_ < pos + len)
+	if (pos + len > this->size_)
 	{
 		len = this->size_ - pos;
 	}
 
-	for (size_t i = 0; i <= len; i++)
+	for (size_t i = pos; i + len < this->size_; ++i)
 	{
-		this->data_[pos + i] = this->data_[i + pos + len];
+		this->data_[i] = this->data_[i + len];
 	}
 
 	this->size_ -= len;
+	this->data_[this->size_] = '\0';
 
 	return *this;
 }
@@ -370,6 +389,17 @@ Vector<String> String::split(char delimeter) const
 	delete[] str;
 
 	return result;
+}
+
+String& String::reverse()
+{
+	for (size_t i = 0; i < this->size_ / 2; i++)
+	{
+		char temp = this->data_[i];
+		this->data_[i] = this->data_[this->size_ - i - 1];
+		this->data_[this->size_ - i - 1] = temp;
+	}
+	return *this;
 }
 
 void String::resize(size_t capacity)
