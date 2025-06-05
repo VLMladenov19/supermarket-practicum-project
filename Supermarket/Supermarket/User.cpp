@@ -52,11 +52,6 @@ User& User::operator=(User&& other) noexcept
     return *this;
 }
 
-UserRole User::getRole() const
-{
-    return UserRole::None;
-}
-
 size_t User::getId() const
 {
     return this->id_;

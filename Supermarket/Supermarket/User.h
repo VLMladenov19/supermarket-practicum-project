@@ -26,7 +26,7 @@ public:
 	User& operator=(User&& other) noexcept;
 	virtual ~User() = default;
 
-	virtual UserRole getRole() const;
+	virtual UserRole getRole() const = 0;
 	size_t getId() const;
 	const String& getFirstName() const;
 	const String& getLastName() const;
