@@ -51,6 +51,9 @@ public:
 
 	String& operator+=(const String& other);
 	friend String operator+(const String& lhs, const String& rhs);
+	String& operator+=(char other);
+	friend String operator+(const String& lhs, char rhs);
+	friend String operator+(char lhs, const String& rhs);
 	char& operator[](size_t pos);
 	const char& operator[](size_t pos) const;
 

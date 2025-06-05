@@ -470,6 +470,13 @@ String& String::operator+=(const String& other)
 	return *this;
 }
 
+String& String::operator+=(char other)
+{
+	this->push_back(other);
+
+	return *this;
+}
+
 char& String::operator[](size_t pos)
 {
 	return this->data_[pos];
@@ -541,6 +548,21 @@ void swap(String& lhs, String& rhs)
 String operator+(const String& lhs, const String& rhs)
 {
 	String result(lhs);
+	result += rhs;
+	return result;
+}
+
+String operator+(const String& lhs, char rhs)
+{
+	String result(lhs);
+	result.push_back(rhs);
+	return result;
+}
+
+String operator+(char lhs, const String& rhs)
+{
+	String result;
+	result.push_back(lhs);
 	result += rhs;
 	return result;
 }
