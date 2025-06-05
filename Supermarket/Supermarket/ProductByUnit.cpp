@@ -35,5 +35,5 @@ Response ProductByUnit::decreaseQuantity(size_t amount)
 	}
 
 	this->quantity_ -= amount;
-	return Response(true, "Quantity successfully decreased.");
+	return Response(true, "Quantity decreased successfully.");
 }
