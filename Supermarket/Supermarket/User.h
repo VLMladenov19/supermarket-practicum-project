@@ -11,7 +11,7 @@ enum class UserRole
 	Manager
 };
 
-String roleToString(UserRole role);
+String roleToStr(UserRole role);
 UserRole strToRole(const String& str);
 
 class User

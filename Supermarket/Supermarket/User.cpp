@@ -77,7 +77,7 @@ const String& User::getPhoneNumber() const
     return this->phoneNumber_;
 }
 
-const unsigned short User::getAge() const
+unsigned short User::getAge() const
 {
     return this->age_;
 }
@@ -205,7 +205,7 @@ void User::copyFrom(const User& other)
     this->password_ = other.password_;
 }
 
-String roleToString(UserRole role)
+String roleToStr(UserRole role)
 {
     switch (role)
     {
