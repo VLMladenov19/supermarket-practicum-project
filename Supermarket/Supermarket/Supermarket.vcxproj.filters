@@ -13,51 +13,78 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Users">
+      <UniqueIdentifier>{0e33cc1a-53c6-4da5-abb0-0eefe55ba75a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Products">
+      <UniqueIdentifier>{43dc766f-585b-4f18-bea8-c88d6130488e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{fadd640f-e3c6-4cf9-833d-ca17eb314886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{ef9055ab-ee24-4a43-8911-92e015a082aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Products">
+      <UniqueIdentifier>{cbaf0a3a-9d3c-4ed3-99db-8ebf906290c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Users">
+      <UniqueIdentifier>{73f47796-359b-493f-a11d-75e188b458f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="String.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="User.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cashier.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Users</Filter>
     </ClInclude>
     <ClInclude Include="Manager.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Users</Filter>
+    </ClInclude>
+    <ClInclude Include="Cashier.h">
+      <Filter>Header Files\Users</Filter>
     </ClInclude>
     <ClInclude Include="Category.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Products</Filter>
     </ClInclude>
     <ClInclude Include="Product.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Products</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ProductByUnit.h">
+      <Filter>Header Files\Products</Filter>
+    </ClInclude>
+    <ClInclude Include="Response.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="String.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="User.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cashier.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="String.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Manager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Users</Filter>
     </ClCompile>
-    <ClCompile Include="Category.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files\Users</Filter>
+    </ClCompile>
+    <ClCompile Include="Cashier.cpp">
+      <Filter>Source Files\Users</Filter>
     </ClCompile>
     <ClCompile Include="Product.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Products</Filter>
+    </ClCompile>
+    <ClCompile Include="Category.cpp">
+      <Filter>Source Files\Products</Filter>
+    </ClCompile>
+    <ClCompile Include="ProductByUnit.cpp">
+      <Filter>Source Files\Products</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

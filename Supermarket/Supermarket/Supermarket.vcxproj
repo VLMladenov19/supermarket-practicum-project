@@ -23,6 +23,8 @@
     <ClInclude Include="Category.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Product.h" />
+    <ClInclude Include="ProductByUnit.h" />
+    <ClInclude Include="Response.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Vector.h" />
@@ -33,6 +35,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Product.cpp" />
+    <ClCompile Include="ProductByUnit.cpp" />
     <ClCompile Include="String.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
