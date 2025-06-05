@@ -31,7 +31,7 @@ public:
 	const String& getFirstName() const;
 	const String& getLastName() const;
 	const String& getPhoneNumber() const;
-	const unsigned short getAge() const;
+	unsigned short getAge() const;
 
 	void setFirstName(const String& firstName);
 	void setLastName(const String& lastName);
