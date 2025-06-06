@@ -44,6 +44,8 @@ public:
 	virtual std::ofstream& serialize(std::ofstream& os) const;
 	virtual std::ifstream& deserialize(std::ifstream& is);
 
+	String toString();
+
 protected:
 	size_t id_;
 	String firstName_;

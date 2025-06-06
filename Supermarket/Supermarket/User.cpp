@@ -165,6 +165,21 @@ std::ifstream& User::deserialize(std::ifstream& is)
     return is;
 }
 
+String User::toString()
+{
+    String userInfo;
+
+    userInfo.push_back('<');
+    userInfo += String::toString(this->getId());
+    userInfo += "> ";
+    userInfo += roleToStr(this->getRole()) + ": ";
+    userInfo += firstName_ + " " + lastName_ + " ";
+    userInfo += phoneNumber_ + " ";
+    userInfo += age_;
+
+    return userInfo;
+}
+
 void User::setId(size_t id)
 {
     this->id_ = id;
