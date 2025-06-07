@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Cashier.h" />
     <ClInclude Include="Category.h" />
+    <ClInclude Include="CommandHandler.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Product.h" />
     <ClInclude Include="ProductByUnit.h" />
@@ -35,6 +36,7 @@
   <ItemGroup>
     <ClCompile Include="Cashier.cpp" />
     <ClCompile Include="Category.cpp" />
+    <ClCompile Include="CommandHandler.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Product.cpp" />

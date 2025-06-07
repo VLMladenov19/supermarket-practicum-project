@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Users">
       <UniqueIdentifier>{73f47796-359b-493f-a11d-75e188b458f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{f2dae289-6cd7-4da4-a794-af1cc97aaf8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{5f05b36b-69a3-4ad7-9f76-ad24f68b6e0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.h">
@@ -63,17 +69,17 @@
     <ClInclude Include="ProductByWeight.h">
       <Filter>Header Files\Products</Filter>
     </ClInclude>
-    <ClInclude Include="Program.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UserManager.h">
       <Filter>Header Files\Users</Filter>
     </ClInclude>
+    <ClInclude Include="CommandHandler.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="String.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -98,11 +104,17 @@
     <ClCompile Include="ProductByWeight.cpp">
       <Filter>Source Files\Products</Filter>
     </ClCompile>
-    <ClCompile Include="Program.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UserManager.cpp">
       <Filter>Source Files\Users</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandler.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

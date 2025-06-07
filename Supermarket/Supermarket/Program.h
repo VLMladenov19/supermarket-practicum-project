@@ -2,13 +2,9 @@
 
 #include "Response.h"
 #include "Vector.h"
+#include "CommandHandler.h"
 #include "UserManager.h"
 #include "Product.h"
-
-namespace Constants
-{
-	const size_t COMMAND_INDEX = 0;
-};
 
 class Program
 {
@@ -23,6 +19,7 @@ private:
 	void loop();
 	void save();
 
-	UserManager userManager;
-	Vector<Product*> products;
+	CommandHandler commandHandler_;
+	UserManager userManager_;
+	Vector<Product*> products_;
 };

@@ -2,10 +2,11 @@
 #include "Cashier.h"
 #include "Manager.h"
 
-Program::Program()
+Program::Program() : commandHandler_(this->userManager_)
 {
-    this->userManager.loadUsers();
-    this->userManager.loadPendingUsers();
+    srand(time(NULL));
+    this->userManager_.loadUsers();
+    this->userManager_.loadPendingUsers();
 }
 
 void Program::run()
@@ -27,7 +28,6 @@ void Program::loop()
     while (true)
     {
         std::cout << "> ";
-
         String line;
         getline(std::cin, line);
 
@@ -37,20 +37,13 @@ void Program::loop()
         }
 
         Vector<String> inputs = line.split();
-        String command = inputs[Constants::COMMAND_INDEX];
-        if (command == "exit")
-        {
-            return;
-        }
-        if (command == "list-workers")
-        {
-
-        }
+        this->commandHandler_.dispatch(inputs);
+        std::cout << '\n';
     }
 }
 
 void Program::save()
 {
-    this->userManager.uploadUsers();
-    this->userManager.uploadPendingUsers();
+    this->userManager_.uploadUsers();
+    this->userManager_.uploadPendingUsers();
 }

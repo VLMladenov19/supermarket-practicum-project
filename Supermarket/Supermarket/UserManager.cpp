@@ -59,17 +59,17 @@ Response UserManager::logout()
 
 Response UserManager::registerUser(User* user)
 {
-    if (user->getRole() == UserRole::Manager)
-    {
-        this->users.push_back(user);
-        this->uploadUsers();
-        return Response(true, "Manager added successfully.");
-    }
     if (user->getRole() == UserRole::Cashier)
     {
         this->pendingUsers.push_back(user);
         this->uploadPendingUsers();
         return Response(true, "Cashier approval added successfully.");
+    }
+    if (user->getRole() == UserRole::Manager)
+    {
+        this->users.push_back(user);
+        this->uploadUsers();
+        return Response(true, "Manager added successfully.");
     }
     return Response(false, "Invalid role.");
 }
@@ -130,12 +130,12 @@ Response UserManager::uploadPendingUsers()
         return Response(false, "Failed to open pending users file.");
     }
 
-    size_t usersCount = this->users.size();
-    os.write((const char*)&usersCount, sizeof(usersCount));
+    size_t pendingUsersCount = this->pendingUsers.size();
+    os.write((const char*)&pendingUsersCount, sizeof(pendingUsersCount));
 
-    for (size_t i = 0; i < usersCount; i++)
+    for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        User* user = this->users[i];
+        User* user = this->pendingUsers[i];
 
         if (user)
         {
@@ -171,10 +171,10 @@ Response UserManager::loadUsers()
         switch (role)
         {
         case UserRole::Cashier:
-            user = new Cashier(0, "", "", "", 0, "");
+            user = new Cashier();
             break;
         case UserRole::Manager:
-            user = new Manager(0, "", "", "", 0, "");
+            user = new Manager();
             break;
         default:
             return Response(false, "Invalid user in file.");
@@ -212,10 +212,10 @@ Response UserManager::loadPendingUsers()
         switch (role)
         {
         case UserRole::Cashier:
-            user = new Cashier(0, "", "", "", 0, "");
+            user = new Cashier();
             break;
         case UserRole::Manager:
-            user = new Manager(0, "", "", "", 0, "");
+            user = new Manager();
             break;
         default:
             return Response(false, "Invalid user in file.");
@@ -260,8 +260,12 @@ User* UserManager::getCurrentUser() const
 
 size_t UserManager::getNextUserId()
 {
-    size_t lastId = this->users[this->users.size() - 1]->getId();
-    return lastId == 0 ? 100 : lastId + 1;
+    size_t usersCount = this->users.size();
+    if (!usersCount)
+    {
+        return 100;
+    }
+    return this->users[usersCount - 1]->getId() + 1;
 }
 
 void UserManager::freeUsers()

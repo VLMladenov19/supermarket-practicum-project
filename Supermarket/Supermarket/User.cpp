@@ -171,7 +171,7 @@ std::ifstream& User::deserialize(std::ifstream& is)
     return is;
 }
 
-String User::toString()
+String User::toString() const
 {
     String userInfo;
 

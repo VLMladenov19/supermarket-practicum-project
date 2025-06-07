@@ -21,6 +21,11 @@ UserRole Manager::getRole() const
 	return UserRole::Manager;
 }
 
+const String& Manager::getSpecialCode() const
+{
+	return this->specialCode_;
+}
+
 bool Manager::compareSpecialCode(const String& specialCode) const
 {
 	return this->specialCode_ == specialCode;
@@ -76,7 +81,7 @@ String Manager::generateSpecialCode() const
 
 void Manager::saveSpecialCode() const
 {
-	String fileName = String::toString(this->id_) + "_special_code.txt";
+	String fileName = "files/" + String::toString(this->id_) + "_special_code.txt";
 	std::ofstream os(fileName, std::ios::out);
 
 	if (!os.is_open())

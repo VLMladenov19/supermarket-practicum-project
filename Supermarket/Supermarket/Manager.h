@@ -11,6 +11,7 @@ public:
 		unsigned short age, const String& pwd);
 
 	UserRole getRole() const override;
+	const String& getSpecialCode() const;
 
 	bool compareSpecialCode(const String& specialCode) const;
 

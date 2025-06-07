@@ -28,10 +28,9 @@ public:
 	const Vector<User*>& getUsers() const;
 	const Vector<User*>& getPendingUsers() const;
 	User* getCurrentUser() const;
-
-private:
 	size_t getNextUserId();
 
+private:
 	Vector<User*> users;
 	Vector<User*> pendingUsers;
 	User* currentUser = nullptr;
