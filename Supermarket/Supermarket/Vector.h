@@ -318,7 +318,7 @@ inline void Vector<T>::copyFrom(const Vector<T>& other)
 	this->capacity_ = other.capacity_;
 	this->size_ = other.size_;
 	this->data_ = new T[this->capacity_];
-	for (size_t i = 0; i < other.size_; i++)
+	for (size_t i = 0; i < this->size_; i++)
 	{
 		this->data_[i] = other.data_[i];
 	}
