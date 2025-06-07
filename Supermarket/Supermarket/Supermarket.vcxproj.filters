@@ -78,6 +78,9 @@
     <ClInclude Include="Program.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="CommandConstants.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="String.cpp">

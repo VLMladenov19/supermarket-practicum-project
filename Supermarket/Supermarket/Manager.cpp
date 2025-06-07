@@ -35,7 +35,7 @@ std::ifstream& Manager::deserialize(std::ifstream& is)
 {
 	User::deserialize(is);
 
-	String specialFileName = String::toString(this->id_) + "_special_code.txt";
+	String specialFileName = "files/" + String::toString(this->id_) + "_special_code.txt";
 	std::ifstream specialFile(specialFileName);
 
 	if (!specialFile.is_open())

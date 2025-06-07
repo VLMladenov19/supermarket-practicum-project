@@ -1,4 +1,5 @@
 #include "CommandHandler.h"
+#include "CommandConstants.h"
 #include "Cashier.h"
 #include "Manager.h"
 
@@ -14,7 +15,7 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 		return;
 	}
 
-	const String& command = inputs[this->COMMAND_INDEX];
+	const String& command = inputs[CommandConstants::COMMAND_INDEX];
 	if (command == "login")
 	{
 		return login(inputs);
@@ -27,18 +28,43 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return addUser(inputs);
 	}
+	if (command == "leave")
+	{
+		return removeCurrentUser(inputs);
+	}
+	if (command == "list-user-data")
+	{
+		return listCurrentUserData(inputs);
+	}
+	if (command == "list-workers")
+	{
+		return listUsers(inputs);
+	}
+	if (command == "list-pending")
+	{
+		return listPending(inputs);
+	}
+	if (command == "approve")
+	{
+		return approvePending(inputs);
+	}
+	if (command == "decline")
+	{
+		return declinePending(inputs);
+	}
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
 {
-	if (inputs.size() != this->LOGIN_INPUT_SIZE)
+	using namespace CommandConstants::Login;
+	if (inputs.size() != INPUT_SIZE)
 	{
 		std::cout << "Invalid inputs.\n";
 		return;
 	}
 
-	Response res = this->userManager_.login(inputs[LOGIN_ID_INDEX].toNumber(),
-		inputs[LOGIN_PASSWORD_INDEX]);
+	Response res = this->userManager_.login(inputs[ID_INDEX].toNumber(),
+		inputs[PASSWORD_INDEX]);
 
 	if (!res.isSuccessful())
 	{
@@ -51,7 +77,7 @@ void CommandHandler::login(const Vector<String>& inputs)
 
 void CommandHandler::logout(const Vector<String>& inputs)
 {
-	if (inputs.size() != this->LOGOUT_INPUT_SIZE)
+	if (inputs.size() != CommandConstants::Logout::INPUT_SIZE)
 	{
 		std::cout << "Invalid inputs.\n";
 		return;
@@ -63,13 +89,14 @@ void CommandHandler::logout(const Vector<String>& inputs)
 
 void CommandHandler::addUser(const Vector<String>& inputs)
 {
-	if (inputs.size() != this->ADD_USER_INPUT_SIZE)
+	using namespace CommandConstants::AddUser;
+	if (inputs.size() != INPUT_SIZE)
 	{
 		std::cout << "Invalid inputs.\n";
 		return;
 	}
 
-	UserRole role = strToRole(inputs[this->ADD_USER_ROLE_INDEX]);
+	UserRole role = strToRole(inputs[ROLE_INDEX]);
 	switch (role)
 	{
 	case UserRole::Cashier:
@@ -84,19 +111,148 @@ void CommandHandler::addUser(const Vector<String>& inputs)
 	}
 }
 
-void CommandHandler::addCashier(const Vector<String>& inputs)
+void CommandHandler::removeCurrentUser(const Vector<String>& inputs)
 {
-	if (inputs.size() != this->ADD_USER_INPUT_SIZE)
+	if (inputs.size() != CommandConstants::RemoveCurrentUser::INPUT_SIZE)
 	{
 		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser)
+	{
+		std::cout << "User not logged in.\n";
+		return;
+	}
+	Response res = this->userManager_.removeUser(currentUser->getId());
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Worker successfully left job.\n";
+}
+
+void CommandHandler::listCurrentUserData(const Vector<String>& inputs)
+{
+	if (inputs.size() != CommandConstants::ListUserData::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser)
+	{
+		std::cout << "User not logged in.\n";
+		return;
+	}
+
+	std::cout << this->userManager_.getCurrentUser()->toString() << '\n';
+}
+
+void CommandHandler::listUsers(const Vector<String>& inputs)
+{
+	if (inputs.size() != CommandConstants::ListUserData::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Vector<User*> users = this->userManager_.getUsers();
+	size_t usersCount = users.size();
+
+	for (size_t i = 0; i < usersCount; i++)
+	{
+		std::cout << users[i]->toString() << '\n';
+	}
+}
+
+void CommandHandler::listPending(const Vector<String>& inputs)
+{
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != CommandConstants::ListUserData::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Vector<User*> users = this->userManager_.getPendingUsers();
+	size_t usersCount = users.size();
+
+	for (size_t i = 0; i < usersCount; i++)
+	{
+		std::cout << users[i]->toString() << '\n';
+	}
+}
+
+void CommandHandler::approvePending(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::ManagePending;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Response res = this->userManager_.approveCashier(
+		inputs[CASHIER_ID_INDEX].toNumber(),
+		inputs[SPECIAL_CODE_INDEX]);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Cashier approved successfully!\n";
+}
+
+void CommandHandler::declinePending(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::ManagePending;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Response res = this->userManager_.declinePending(
+		inputs[CASHIER_ID_INDEX].toNumber(),
+		inputs[SPECIAL_CODE_INDEX]);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Cashier declined successfully!\n";
+}
+
+void CommandHandler::addCashier(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::AddUser;
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
 	}
 
 	Cashier* cashier = new Cashier(this->userManager_.getNextUserId(),
-		inputs[ADD_USER_FIRST_NAME_INDEX],
-		inputs[ADD_USER_LAST_NAME_INDEX],
-		inputs[ADD_USER_PHONE_NUMBER_INDEX],
-		(unsigned short)inputs[ADD_USER_AGE_INDEX].toNumber(),
-		inputs[ADD_USER_PASSWORD_INDEX]);
+		inputs[FIRST_NAME_INDEX],
+		inputs[LAST_NAME_INDEX],
+		inputs[PHONE_NUMBER_INDEX],
+		(unsigned short)inputs[AGE_INDEX].toNumber(),
+		inputs[PASSWORD_INDEX]);
 
 	Response res = this->userManager_.registerUser(cashier);
 
@@ -111,17 +267,19 @@ void CommandHandler::addCashier(const Vector<String>& inputs)
 
 void CommandHandler::addManager(const Vector<String>& inputs)
 {
-	if (inputs.size() != this->ADD_USER_INPUT_SIZE)
+	using namespace CommandConstants::AddUser;
+	if (inputs.size() != INPUT_SIZE)
 	{
 		std::cout << "Invalid inputs.\n";
+		return;
 	}
-
+	
 	Manager* manager = new Manager(this->userManager_.getNextUserId(),
-		inputs[ADD_USER_FIRST_NAME_INDEX],
-		inputs[ADD_USER_LAST_NAME_INDEX],
-		inputs[ADD_USER_PHONE_NUMBER_INDEX],
-		(unsigned short)inputs[ADD_USER_AGE_INDEX].toNumber(),
-		inputs[ADD_USER_PASSWORD_INDEX]);
+		inputs[FIRST_NAME_INDEX],
+		inputs[LAST_NAME_INDEX],
+		inputs[PHONE_NUMBER_INDEX],
+		(unsigned short)inputs[AGE_INDEX].toNumber(),
+		inputs[PASSWORD_INDEX]);
 
 	Response res = this->userManager_.registerUser(manager);
 

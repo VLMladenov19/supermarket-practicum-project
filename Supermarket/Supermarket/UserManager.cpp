@@ -39,7 +39,7 @@ Response UserManager::login(size_t id, const String& pwd)
 
     if (!user->checkPassword(pwd))
     {
-        return Response(false, "Weong password.");
+        return Response(false, "Wrong password.");
     }
 
     this->currentUser = user;
@@ -92,6 +92,76 @@ Response UserManager::removeUser(size_t id)
     }
 
     return Response(false, "Invalid id.");
+}
+
+Response UserManager::approveCashier(size_t id, const String& specialCode)
+{
+    if (this->currentUser->getRole() != UserRole::Manager)
+    {
+        return Response(false, "Invalid access.");
+    }
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+
+    if (!manager->compareSpecialCode(specialCode))
+    {
+        return Response(false, "Wrong special code.");
+    }
+    
+    size_t pendingUsersCount = this->pendingUsers.size();
+    for (size_t i = 0; i < pendingUsersCount; i++)
+    {
+        if (this->pendingUsers[i]->getId() == id)
+        {
+            this->users.push_back(this->pendingUsers[i]);
+            this->pendingUsers.remove(i);
+            return this->uploadAll();
+        }
+    }
+
+    return Response(false, "Invalid id.");
+}
+
+Response UserManager::declinePending(size_t id, const String& specialCode)
+{
+    if (this->currentUser->getRole() != UserRole::Manager)
+    {
+        return Response(false, "Invalid access.");
+    }
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+
+    if (!manager->compareSpecialCode(specialCode))
+    {
+        return Response(false, "Wrong special code.");
+    }
+
+    size_t pendingUsersCount = this->pendingUsers.size();
+    for (size_t i = 0; i < pendingUsersCount; i++)
+    {
+        if (this->pendingUsers[i]->getId() == id)
+        {
+            this->pendingUsers.remove(i);
+            return this->uploadPendingUsers();
+        }
+    }
+
+    return Response(false, "Invalid id.");
+}
+
+Response UserManager::uploadAll()
+{
+    Response res = this->uploadUsers();
+    if (!res.isSuccessful())
+    {
+        return res;
+    }
+
+    res = uploadPendingUsers();
+    if (!res.isSuccessful())
+    {
+        return res;
+    }
+
+    return Response(true, "All users uploaded successfully.");
 }
 
 Response UserManager::uploadUsers()
@@ -198,7 +268,7 @@ Response UserManager::loadPendingUsers()
         return Response(false, "Failed to open pending users file.");
     }
 
-    this->users.clear();
+    this->pendingUsers.clear();
 
     size_t usersCount = 0;
     is.read((char*)&usersCount, sizeof(usersCount));
@@ -243,6 +313,19 @@ User* UserManager::getUserById(size_t id) const
     return nullptr;
 }
 
+User* UserManager::getPendingUserById(size_t id) const
+{
+    size_t pendingUsersCount = this->pendingUsers.size();
+    for (size_t i = 0; i < pendingUsersCount; i++)
+    {
+        if (this->pendingUsers[i]->getId() == id)
+        {
+            return this->pendingUsers[i];
+        }
+    }
+    return nullptr;
+}
+
 const Vector<User*>& UserManager::getUsers() const
 {
     return this->users;
@@ -261,11 +344,20 @@ User* UserManager::getCurrentUser() const
 size_t UserManager::getNextUserId()
 {
     size_t usersCount = this->users.size();
-    if (!usersCount)
+    size_t pendingUsersCount = this->pendingUsers.size();
+
+    size_t lastUserId = 100;
+    if (usersCount != 0)
     {
-        return 100;
+        lastUserId = this->users[usersCount - 1]->getId();
     }
-    return this->users[usersCount - 1]->getId() + 1;
+    size_t lastPendingUserId = 100;
+    if (pendingUsersCount != 0)
+    {
+        lastPendingUserId = this->pendingUsers[pendingUsersCount - 1]->getId();
+    }
+    size_t lastId = std::max(lastUserId, lastPendingUserId);
+    return lastId + 1;
 }
 
 void UserManager::freeUsers()

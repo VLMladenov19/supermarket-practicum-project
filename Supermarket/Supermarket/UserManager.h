@@ -17,6 +17,10 @@ public:
 	Response registerUser(User* user);
 	Response removeUser(size_t id);
 
+	Response approveCashier(size_t id, const String& specialCode);
+	Response declinePending(size_t id, const String& specialCode);
+
+	Response uploadAll();
 	Response uploadUsers();
 	Response uploadPendingUsers();
 
@@ -24,6 +28,7 @@ public:
 	Response loadPendingUsers();
 
 	User* getUserById(size_t id) const;
+	User* getPendingUserById(size_t id) const;
 
 	const Vector<User*>& getUsers() const;
 	const Vector<User*>& getPendingUsers() const;

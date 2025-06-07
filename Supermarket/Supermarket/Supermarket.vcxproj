@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Cashier.h" />
     <ClInclude Include="Category.h" />
+    <ClInclude Include="CommandConstants.h" />
     <ClInclude Include="CommandHandler.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Product.h" />
