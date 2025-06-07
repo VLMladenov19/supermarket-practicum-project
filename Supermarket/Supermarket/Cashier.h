@@ -1,6 +1,7 @@
 #pragma once
 
 #include "User.h"
+#include "Manager.h"
 
 class Cashier : public User
 {
@@ -12,6 +13,8 @@ public:
 
 	UserRole getRole() const override;
 	size_t getTransactionsCount() const;
+
+	Manager* getAsManager() const;
 
 	void incrementTransactionsCount();
 

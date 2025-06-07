@@ -52,6 +52,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return declinePending(inputs);
 	}
+	if (command == "promote-cashier")
+	{
+		return promoteCashier(inputs);
+	}
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
@@ -190,7 +194,7 @@ void CommandHandler::listPending(const Vector<String>& inputs)
 
 void CommandHandler::approvePending(const Vector<String>& inputs)
 {
-	using namespace CommandConstants::ManagePending;
+	using namespace CommandConstants::ManageCashier;
 	User* currentUser = this->userManager_.getCurrentUser();
 	if (!currentUser || currentUser->getRole() != UserRole::Manager)
 	{
@@ -215,7 +219,7 @@ void CommandHandler::approvePending(const Vector<String>& inputs)
 
 void CommandHandler::declinePending(const Vector<String>& inputs)
 {
-	using namespace CommandConstants::ManagePending;
+	using namespace CommandConstants::ManageCashier;
 	User* currentUser = this->userManager_.getCurrentUser();
 	if (!currentUser || currentUser->getRole() != UserRole::Manager)
 	{
@@ -227,7 +231,7 @@ void CommandHandler::declinePending(const Vector<String>& inputs)
 		std::cout << "Invalid inputs.\n";
 		return;
 	}
-	Response res = this->userManager_.declinePending(
+	Response res = this->userManager_.declineCashier(
 		inputs[CASHIER_ID_INDEX].toNumber(),
 		inputs[SPECIAL_CODE_INDEX]);
 	if (!res.isSuccessful())
@@ -236,6 +240,31 @@ void CommandHandler::declinePending(const Vector<String>& inputs)
 		return;
 	}
 	std::cout << "Cashier declined successfully!\n";
+}
+
+void CommandHandler::promoteCashier(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::ManageCashier;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Response res = this->userManager_.promoteCashier(
+		inputs[CASHIER_ID_INDEX].toNumber(),
+		inputs[SPECIAL_CODE_INDEX]);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Cashier promoted successfully!\n";
 }
 
 void CommandHandler::addCashier(const Vector<String>& inputs)

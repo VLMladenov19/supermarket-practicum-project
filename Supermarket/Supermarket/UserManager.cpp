@@ -121,7 +121,7 @@ Response UserManager::approveCashier(size_t id, const String& specialCode)
     return Response(false, "Invalid id.");
 }
 
-Response UserManager::declinePending(size_t id, const String& specialCode)
+Response UserManager::declineCashier(size_t id, const String& specialCode)
 {
     if (this->currentUser->getRole() != UserRole::Manager)
     {
@@ -141,6 +141,45 @@ Response UserManager::declinePending(size_t id, const String& specialCode)
         {
             this->pendingUsers.remove(i);
             return this->uploadPendingUsers();
+        }
+    }
+
+    return Response(false, "Invalid id.");
+}
+
+Response UserManager::promoteCashier(size_t id, const String& specialCode)
+{
+    if (this->currentUser->getRole() != UserRole::Manager)
+    {
+        return Response(false, "Invalid access.");
+    }
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+
+    if (!manager->compareSpecialCode(specialCode))
+    {
+        return Response(false, "Wrong special code.");
+    }
+
+    size_t usersCount = this->users.size();
+    for (size_t i = 0; i < usersCount; i++)
+    {
+        if (this->users[i]->getId() == id)
+        {
+            if (this->users[i]->getRole() == UserRole::Manager)
+            {
+                return Response(false, "Already promoted.");
+            }
+
+            Cashier* cashier = dynamic_cast<Cashier*>(this->users[i]);
+            if (!cashier)
+            {
+                return Response(false, "User is not a Cashier.");
+            }
+
+            Manager* promoted = cashier->getAsManager();
+            delete this->users[i];
+            this->users[i] = promoted;
+            return this->uploadUsers();
         }
     }
 

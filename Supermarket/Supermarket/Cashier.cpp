@@ -23,6 +23,18 @@ size_t Cashier::getTransactionsCount() const
 	return this->transactionsCount_;
 }
 
+Manager* Cashier::getAsManager() const
+{
+	return new Manager(
+		this->id_,
+		this->firstName_,
+		this->lastName_,
+		this->phoneNumber_,
+		this->age_,
+		this->password_
+	);
+}
+
 void Cashier::incrementTransactionsCount()
 {
 	this->transactionsCount_++;

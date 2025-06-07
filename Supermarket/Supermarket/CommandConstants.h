@@ -42,7 +42,7 @@ namespace CommandConstants
 		constexpr size_t INPUT_SIZE = 1;
 	}
 
-	namespace ManagePending
+	namespace ManageCashier
 	{
 		constexpr size_t INPUT_SIZE = 3;
 		constexpr size_t CASHIER_ID_INDEX = 1;
