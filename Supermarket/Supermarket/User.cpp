@@ -1,5 +1,11 @@
 #include "User.h"
 
+User::User()
+    : id_(0), firstName_(), lastName_(), 
+    phoneNumber_(), age_(0), password_()
+{
+}
+
 User::User(size_t id, const String& firstName,
     const String& lastName, const String& phoneNumber, 
     unsigned short age, const String& pwd)
@@ -175,7 +181,7 @@ String User::toString()
     userInfo += roleToStr(this->getRole()) + ": ";
     userInfo += firstName_ + " " + lastName_ + " ";
     userInfo += phoneNumber_ + " ";
-    userInfo += age_;
+    userInfo += String::toString(age_);
 
     return userInfo;
 }

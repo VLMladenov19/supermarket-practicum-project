@@ -2,6 +2,11 @@
 
 #include <fstream>
 
+Manager::Manager()
+	: User(), specialCode_()
+{
+}
+
 Manager::Manager(size_t id, const String& firstName,
 	const String& lastName, const String& phoneNumber,
 	unsigned short age, const String& pwd)
@@ -19,6 +24,24 @@ UserRole Manager::getRole() const
 bool Manager::compareSpecialCode(const String& specialCode) const
 {
 	return this->specialCode_ == specialCode;
+}
+
+std::ifstream& Manager::deserialize(std::ifstream& is)
+{
+	User::deserialize(is);
+
+	String specialFileName = String::toString(this->id_) + "_special_code.txt";
+	std::ifstream specialFile(specialFileName);
+
+	if (!specialFile.is_open())
+	{
+		return is;
+	}
+
+	getline(specialFile, this->specialCode_);
+	specialFile.close();
+
+	return is;
 }
 
 char Manager::randomDigit()

@@ -17,6 +17,7 @@ UserRole strToRole(const String& str);
 class User
 {
 public:
+	User();
 	User(size_t id, const String& firstName,
 		const String& lastName, const String& phoneNumber,
 		unsigned short age, const String& pwd);
