@@ -20,6 +20,7 @@ public:
 	Response approveCashier(size_t id, const String& specialCode);
 	Response declineCashier(size_t id, const String& specialCode);
 	Response promoteCashier(size_t id, const String& specialCode);
+	Response fireCashier(size_t id, const String& specialCode);
 
 	Response uploadAll();
 	Response uploadUsers();

@@ -56,6 +56,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return promoteCashier(inputs);
 	}
+	if (command == "fire-cashier")
+	{
+		return fireCashier(inputs);
+	}
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
@@ -163,7 +167,11 @@ void CommandHandler::listUsers(const Vector<String>& inputs)
 	}
 	Vector<User*> users = this->userManager_.getUsers();
 	size_t usersCount = users.size();
-
+	if (!usersCount)
+	{
+		std::cout << "No workers!\n";
+		return;
+	}
 	for (size_t i = 0; i < usersCount; i++)
 	{
 		std::cout << users[i]->toString() << '\n';
@@ -183,12 +191,16 @@ void CommandHandler::listPending(const Vector<String>& inputs)
 		std::cout << "Invalid inputs.\n";
 		return;
 	}
-	Vector<User*> users = this->userManager_.getPendingUsers();
-	size_t usersCount = users.size();
-
-	for (size_t i = 0; i < usersCount; i++)
+	Vector<User*> pendingUsers = this->userManager_.getPendingUsers();
+	size_t pendingUsersCount = pendingUsers.size();
+	if (!pendingUsersCount)
 	{
-		std::cout << users[i]->toString() << '\n';
+		std::cout << "No pending approvals!\n";
+		return;
+	}
+	for (size_t i = 0; i < pendingUsersCount; i++)
+	{
+		std::cout << pendingUsers[i]->toString() << '\n';
 	}
 }
 
@@ -265,6 +277,31 @@ void CommandHandler::promoteCashier(const Vector<String>& inputs)
 		return;
 	}
 	std::cout << "Cashier promoted successfully!\n";
+}
+
+void CommandHandler::fireCashier(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::ManageCashier;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Response res = this->userManager_.fireCashier(
+		inputs[CASHIER_ID_INDEX].toNumber(),
+		inputs[SPECIAL_CODE_INDEX]);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Cashier fired successfully!\n";
 }
 
 void CommandHandler::addCashier(const Vector<String>& inputs)

@@ -186,6 +186,26 @@ Response UserManager::promoteCashier(size_t id, const String& specialCode)
     return Response(false, "Invalid id.");
 }
 
+Response UserManager::fireCashier(size_t id, const String& specialCode)
+{
+    if (this->currentUser->getRole() != UserRole::Manager)
+    {
+        return Response(false, "Invalid access.");
+    }
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+
+    if (!manager->compareSpecialCode(specialCode))
+    {
+        return Response(false, "Wrong special code.");
+    }
+    if (this->getUserById(id)->getRole() == UserRole::Manager)
+    {
+        return Response(false, "Can't fire manager.");
+    }
+
+    return this->removeUser(id);
+}
+
 Response UserManager::uploadAll()
 {
     Response res = this->uploadUsers();
