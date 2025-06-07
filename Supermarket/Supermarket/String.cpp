@@ -363,30 +363,46 @@ size_t String::find(const char* str, size_t pos) const
 	return find(String(str), pos);
 }
 
+String String::substring(size_t pos, size_t len) const
+{
+	if (pos >= this->size_ || this->empty())
+	{
+		return String();
+	}
+
+	if (pos + len > this->size_ || len == String::npos)
+	{
+		len = this->size_ - pos;
+	}
+
+	String result;
+	for (size_t i = 0; i < len; i++)
+	{
+		result.push_back(this->data_[pos + i]);
+	}
+	return result;
+}
+
 Vector<String> String::split(char delimeter) const
 {
 	Vector<String> result;
 	size_t start = 0;
-
-	char* str = new char[this->size_ + 1];
-	size_t len = 0;
 	for (size_t i = 0; i < this->size_; i++)
 	{
-		if (this->data_[i] == delimeter)
+		if (this->data_[i] == delimeter ||
+			this->data_[i] == '\0')
 		{
-			str[len] = '\0';
-			result.push_back(str);
-			len = 0;
-			continue;
+			if (i > start)
+			{
+				result.push_back(this->substring(start, i - start));
+			}
+			start = i + 1;
 		}
-		str[len++] = this->data_[i];
 	}
-	if (len)
+	if (start < this->size_)
 	{
-		str[len] = '\0';
-		result.push_back(str);
+		result.push_back(this->substring(start));
 	}
-	delete[] str;
 
 	return result;
 }

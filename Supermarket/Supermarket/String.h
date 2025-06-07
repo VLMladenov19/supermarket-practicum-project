@@ -43,6 +43,7 @@ public:
 	size_t find(const String& str, size_t pos = 0) const;
 	size_t find(const char* str, size_t pos = 0) const;
 
+	String substring(size_t pos, size_t len = String::npos) const;
 	Vector<String> split(char delimeter = ' ') const;
 
 	String& reverse();
