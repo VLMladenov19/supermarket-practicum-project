@@ -50,4 +50,5 @@ private:
 
 	const String usersFile = "files/users.bin";
 	const String pendingUsersFile = "files/pending_users.bin";
+	const size_t baseUserId = 100;
 };

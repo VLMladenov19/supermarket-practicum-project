@@ -402,21 +402,18 @@ User* UserManager::getCurrentUser() const
 
 size_t UserManager::getNextUserId()
 {
+    size_t maxId = this->baseUserId - 1;
     size_t usersCount = this->users.size();
+    for (size_t i = 0; i < usersCount; i++)
+    {
+        maxId = std::max(maxId, this->users[i]->getId());
+    }
     size_t pendingUsersCount = this->pendingUsers.size();
-
-    size_t lastUserId = 100;
-    if (usersCount != 0)
+    for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        lastUserId = this->users[usersCount - 1]->getId();
+        maxId = std::max(maxId, this->pendingUsers[i]->getId());
     }
-    size_t lastPendingUserId = 100;
-    if (pendingUsersCount != 0)
-    {
-        lastPendingUserId = this->pendingUsers[pendingUsersCount - 1]->getId();
-    }
-    size_t lastId = std::max(lastUserId, lastPendingUserId);
-    return lastId + 1;
+    return maxId + 1;
 }
 
 void UserManager::freeUsers()

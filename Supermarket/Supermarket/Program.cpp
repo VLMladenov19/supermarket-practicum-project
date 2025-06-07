@@ -37,6 +37,16 @@ void Program::loop()
         }
 
         Vector<String> inputs = line.split();
+        for (size_t i = 1; i < inputs.size(); ++i)
+        {
+            String& input = inputs[i];
+            if (input.size() >= 2 && 
+                input[0] == '<' && input[input.size() - 1] == '>')
+            {
+                input.erase(0, 1);       // Remove the '<'
+                input.pop_back();      // Remove the '>'
+            }
+        }
         this->commandHandler_.dispatch(inputs);
         std::cout << '\n';
     }
