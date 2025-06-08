@@ -63,7 +63,14 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	}
 	if (command == "list-products")
 	{
-		return listProducts(inputs);
+		if (inputs.size() == CommandConstants::ListProducts::INPUT_SIZE)
+		{
+			return listProducts(inputs);
+		}
+		if (inputs.size() == CommandConstants::ListProductsByCategory::INPUT_SIZE)
+		{
+			return listProductsByCategory(inputs);
+		}
 	}
 	if (command == "load-products")
 	{
@@ -330,6 +337,32 @@ void CommandHandler::listProducts(const Vector<String>& inputs)
 	for (size_t i = 0; i < productsCount; i++)
 	{
 		std::cout << products[i]->toString() << '\n';
+	}
+}
+
+void CommandHandler::listProductsByCategory(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::ListProductsByCategory;
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Vector<Product*> products = this->productManager_.getProducts();
+	size_t productsCount = products.size();
+	size_t categoryId = inputs[CATEGORY_ID_INDEX].toNumber();
+	bool hasProductsFromCategory = false;
+	for (size_t i = 0; i < productsCount; i++)
+	{
+		if (products[i]->getCategoryId() == categoryId)
+		{
+			std::cout << products[i]->toString() << '\n';
+			hasProductsFromCategory = true;
+		}
+	}
+	if (!hasProductsFromCategory)
+	{
+		std::cout << "No products!\n";
 	}
 }
 

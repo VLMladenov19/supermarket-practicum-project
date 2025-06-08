@@ -1,6 +1,6 @@
 5
 ByUnit:100:Gum:100:135:1400
-ByWeight:101:Banana:100:135:100
+ByWeight:101:Banana:101:135:100
 ByUnit:102:Gum:100:135:100
 ByWeight:103:Orange:101:340:6500
 ByWeight:104:Apple:101:240:5000

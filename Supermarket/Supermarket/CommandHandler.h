@@ -26,6 +26,7 @@ public:
 	void fireCashier(const Vector<String>& inputs);
 
 	void listProducts(const Vector<String>& inputs);
+	void listProductsByCategory(const Vector<String>& inputs);
 	void loadNewProducts(const Vector<String>& inputs);
 
 private:

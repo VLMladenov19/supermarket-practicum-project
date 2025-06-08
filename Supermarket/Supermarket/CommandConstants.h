@@ -54,6 +54,12 @@ namespace CommandConstants
 		constexpr size_t INPUT_SIZE = 1;
 	}
 
+	namespace ListProductsByCategory
+	{
+		constexpr size_t INPUT_SIZE = 2;
+		constexpr size_t CATEGORY_ID_INDEX = 1;
+	}
+
 	namespace LoadProducts
 	{
 		constexpr size_t INPUT_SIZE = 2;
