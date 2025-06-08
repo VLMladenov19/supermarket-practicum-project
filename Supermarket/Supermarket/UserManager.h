@@ -7,7 +7,7 @@
 class UserManager
 {
 public:
-	UserManager() = default;
+	UserManager();
 	UserManager(const UserManager& other);
 	UserManager& operator=(const UserManager& other);
 	~UserManager();
@@ -22,12 +22,13 @@ public:
 	Response promoteCashier(size_t id, const String& specialCode);
 	Response fireCashier(size_t id, const String& specialCode);
 
-	Response uploadAll();
-	Response uploadUsers();
-	Response uploadPendingUsers();
-
+	Response loadAll();
 	Response loadUsers();
 	Response loadPendingUsers();
+
+	Response uploadAll() const;
+	Response uploadUsers() const;
+	Response uploadPendingUsers() const;
 
 	User* getUserById(size_t id) const;
 	User* getPendingUserById(size_t id) const;
@@ -35,20 +36,19 @@ public:
 	const Vector<User*>& getUsers() const;
 	const Vector<User*>& getPendingUsers() const;
 	User* getCurrentUser() const;
-	size_t getNextUserId();
+	size_t getNextUserId() const;
 
 private:
-	Vector<User*> users;
-	Vector<User*> pendingUsers;
-	User* currentUser = nullptr;
-
-	void freeUsers();
-	void freePendingUsers();
+	Vector<User*> users_;
+	Vector<User*> pendingUsers_;
+	User* currentUser_ = nullptr;
 
 	void copyFrom(const UserManager& other);
 	void free();
+	void freeUsers();
+	void freePendingUsers();
 
-	const String usersFile = "files/users.bin";
-	const String pendingUsersFile = "files/pending_users.bin";
-	const size_t baseUserId = 100;
+	const String USERS_FILE = "files/users.bin";
+	const String PENDING_USERS_FILE = "files/pending_users.bin";
+	const size_t BASE_USER_ID = 100;
 };

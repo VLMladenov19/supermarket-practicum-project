@@ -3,8 +3,9 @@
 #include "Cashier.h"
 #include "Manager.h"
 
-CommandHandler::CommandHandler(UserManager& userManager)
-	: userManager_(userManager)
+CommandHandler::CommandHandler(UserManager& userManager,
+	ProductManager& productManager)
+	: userManager_(userManager), productManager_(productManager)
 {
 }
 
@@ -59,6 +60,14 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	if (command == "fire-cashier")
 	{
 		return fireCashier(inputs);
+	}
+	if (command == "list-products")
+	{
+		return listProducts(inputs);
+	}
+	if (command == "load-products")
+	{
+		return loadNewProducts(inputs);
 	}
 }
 
@@ -302,6 +311,51 @@ void CommandHandler::fireCashier(const Vector<String>& inputs)
 		return;
 	}
 	std::cout << "Cashier fired successfully!\n";
+}
+
+void CommandHandler::listProducts(const Vector<String>& inputs)
+{
+	if (inputs.size() != CommandConstants::ListProducts::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Vector<Product*> products = this->productManager_.getProducts();
+	size_t productsCount = products.size();
+	if (!productsCount)
+	{
+		std::cout << "No products!\n";
+		return;
+	}
+	for (size_t i = 0; i < productsCount; i++)
+	{
+		std::cout << products[i]->toString() << '\n';
+	}
+}
+
+void CommandHandler::loadNewProducts(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::LoadProducts;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+
+	String fileName = "files/" + inputs[FILE_NAME_INDEX];
+	Response res = this->productManager_.loadNewProducts(fileName);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Products loaded successfully.\n";
 }
 
 void CommandHandler::addCashier(const Vector<String>& inputs)

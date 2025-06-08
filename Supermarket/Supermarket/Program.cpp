@@ -2,11 +2,10 @@
 #include "Cashier.h"
 #include "Manager.h"
 
-Program::Program() : commandHandler_(this->userManager_)
+Program::Program() 
+    : commandHandler_(this->userManager_, this->productManager_)
 {
     srand(time(NULL));
-    this->userManager_.loadUsers();
-    this->userManager_.loadPendingUsers();
 }
 
 void Program::run()

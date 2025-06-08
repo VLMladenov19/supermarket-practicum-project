@@ -2,6 +2,11 @@
 #include "Cashier.h"
 #include "Manager.h"
 
+UserManager::UserManager()
+{
+    this->loadAll();
+}
+
 UserManager::UserManager(const UserManager& other)
 {
     this->copyFrom(other);
@@ -25,7 +30,7 @@ UserManager::~UserManager()
 
 Response UserManager::login(size_t id, const String& pwd)
 {
-    if (this->currentUser)
+    if (this->currentUser_)
     {
         return Response(false, "User already logged in.");
     }
@@ -42,18 +47,18 @@ Response UserManager::login(size_t id, const String& pwd)
         return Response(false, "Wrong password.");
     }
 
-    this->currentUser = user;
+    this->currentUser_ = user;
     return Response(true, "Login successful.");
 }
 
 Response UserManager::logout()
 {
-    if (!this->currentUser)
+    if (!this->currentUser_)
     {
         return Response(false, "User not logged in.");
     }
 
-    this->currentUser = nullptr;
+    this->currentUser_ = nullptr;
     return Response(true, "User logged out successfully.");
 }
 
@@ -61,13 +66,13 @@ Response UserManager::registerUser(User* user)
 {
     if (user->getRole() == UserRole::Cashier)
     {
-        this->pendingUsers.push_back(user);
+        this->pendingUsers_.push_back(user);
         this->uploadPendingUsers();
         return Response(true, "Cashier approval added successfully.");
     }
     if (user->getRole() == UserRole::Manager)
     {
-        this->users.push_back(user);
+        this->users_.push_back(user);
         this->uploadUsers();
         return Response(true, "Manager added successfully.");
     }
@@ -76,17 +81,17 @@ Response UserManager::registerUser(User* user)
 
 Response UserManager::removeUser(size_t id)
 {
-    if (this->currentUser->getId() == id)
+    if (this->currentUser_->getId() == id)
     {
-        this->currentUser = nullptr;
+        this->currentUser_ = nullptr;
     }
 
-    size_t usersCount = this->users.size();
+    size_t usersCount = this->users_.size();
     for (size_t i = 0; i < usersCount; i++)
     {
-        if (this->users[i]->getId() == id)
+        if (this->users_[i]->getId() == id)
         {
-            this->users.remove(i);
+            this->users_.remove(i);
             return this->uploadUsers();
         }
     }
@@ -96,24 +101,24 @@ Response UserManager::removeUser(size_t id)
 
 Response UserManager::approveCashier(size_t id, const String& specialCode)
 {
-    if (this->currentUser->getRole() != UserRole::Manager)
+    if (this->currentUser_->getRole() != UserRole::Manager)
     {
         return Response(false, "Invalid access.");
     }
-    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser_);
 
     if (!manager->compareSpecialCode(specialCode))
     {
         return Response(false, "Wrong special code.");
     }
     
-    size_t pendingUsersCount = this->pendingUsers.size();
+    size_t pendingUsersCount = this->pendingUsers_.size();
     for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        if (this->pendingUsers[i]->getId() == id)
+        if (this->pendingUsers_[i]->getId() == id)
         {
-            this->users.push_back(this->pendingUsers[i]);
-            this->pendingUsers.remove(i);
+            this->users_.push_back(this->pendingUsers_[i]);
+            this->pendingUsers_.remove(i);
             return this->uploadAll();
         }
     }
@@ -123,23 +128,23 @@ Response UserManager::approveCashier(size_t id, const String& specialCode)
 
 Response UserManager::declineCashier(size_t id, const String& specialCode)
 {
-    if (this->currentUser->getRole() != UserRole::Manager)
+    if (this->currentUser_->getRole() != UserRole::Manager)
     {
         return Response(false, "Invalid access.");
     }
-    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser_);
 
     if (!manager->compareSpecialCode(specialCode))
     {
         return Response(false, "Wrong special code.");
     }
 
-    size_t pendingUsersCount = this->pendingUsers.size();
+    size_t pendingUsersCount = this->pendingUsers_.size();
     for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        if (this->pendingUsers[i]->getId() == id)
+        if (this->pendingUsers_[i]->getId() == id)
         {
-            this->pendingUsers.remove(i);
+            this->pendingUsers_.remove(i);
             return this->uploadPendingUsers();
         }
     }
@@ -149,36 +154,36 @@ Response UserManager::declineCashier(size_t id, const String& specialCode)
 
 Response UserManager::promoteCashier(size_t id, const String& specialCode)
 {
-    if (this->currentUser->getRole() != UserRole::Manager)
+    if (this->currentUser_->getRole() != UserRole::Manager)
     {
         return Response(false, "Invalid access.");
     }
-    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser_);
 
     if (!manager->compareSpecialCode(specialCode))
     {
         return Response(false, "Wrong special code.");
     }
 
-    size_t usersCount = this->users.size();
+    size_t usersCount = this->users_.size();
     for (size_t i = 0; i < usersCount; i++)
     {
-        if (this->users[i]->getId() == id)
+        if (this->users_[i]->getId() == id)
         {
-            if (this->users[i]->getRole() == UserRole::Manager)
+            if (this->users_[i]->getRole() == UserRole::Manager)
             {
                 return Response(false, "Already promoted.");
             }
 
-            Cashier* cashier = dynamic_cast<Cashier*>(this->users[i]);
+            Cashier* cashier = dynamic_cast<Cashier*>(this->users_[i]);
             if (!cashier)
             {
                 return Response(false, "User is not a Cashier.");
             }
 
             Manager* promoted = cashier->getAsManager();
-            delete this->users[i];
-            this->users[i] = promoted;
+            delete this->users_[i];
+            this->users_[i] = promoted;
             return this->uploadUsers();
         }
     }
@@ -188,11 +193,11 @@ Response UserManager::promoteCashier(size_t id, const String& specialCode)
 
 Response UserManager::fireCashier(size_t id, const String& specialCode)
 {
-    if (this->currentUser->getRole() != UserRole::Manager)
+    if (this->currentUser_->getRole() != UserRole::Manager)
     {
         return Response(false, "Invalid access.");
     }
-    Manager* manager = dynamic_cast<Manager*>(this->currentUser);
+    Manager* manager = dynamic_cast<Manager*>(this->currentUser_);
 
     if (!manager->compareSpecialCode(specialCode))
     {
@@ -206,7 +211,114 @@ Response UserManager::fireCashier(size_t id, const String& specialCode)
     return this->removeUser(id);
 }
 
-Response UserManager::uploadAll()
+Response UserManager::loadAll()
+{
+    Response res = this->loadUsers();
+    if (!res.isSuccessful())
+    {
+        return res;
+    }
+
+    res = loadPendingUsers();
+    if (!res.isSuccessful())
+    {
+        return res;
+    }
+
+    return Response(true, "All users loaded successfully.");
+}
+
+Response UserManager::loadUsers()
+{
+    std::ifstream is(this->USERS_FILE, std::ios::binary);
+
+    if (!is.is_open())
+    {
+        return Response(false, "Failed to open users file.");
+    }
+
+    this->users_.clear();
+
+    size_t usersCount = 0;
+    is.read((char*)&usersCount, sizeof(usersCount));
+
+    for (size_t i = 0; i < usersCount; i++)
+    {
+        UserRole role = UserRole::None;
+        is.read((char*)&role, sizeof(role));
+
+        User* user = nullptr;
+        switch (role)
+        {
+        case UserRole::Cashier:
+            user = new Cashier();
+            break;
+        case UserRole::Manager:
+            user = new Manager();
+            break;
+        default:
+            return Response(false, "Invalid user in file.");
+        }
+
+        if (user->deserialize(is).fail())
+        {
+            delete user;
+            continue;
+        }
+        this->users_.push_back(user);
+    }
+
+    is.close();
+
+    return Response(true, "Users loaded successfully.");
+}
+
+Response UserManager::loadPendingUsers()
+{
+    std::ifstream is(this->PENDING_USERS_FILE, std::ios::binary);
+
+    if (!is.is_open())
+    {
+        return Response(false, "Failed to open pending users file.");
+    }
+
+    this->pendingUsers_.clear();
+
+    size_t usersCount = 0;
+    is.read((char*)&usersCount, sizeof(usersCount));
+
+    for (size_t i = 0; i < usersCount; i++)
+    {
+        UserRole role = UserRole::None;
+        is.read((char*)&role, sizeof(role));
+
+        User* user = nullptr;
+        switch (role)
+        {
+        case UserRole::Cashier:
+            user = new Cashier();
+            break;
+        case UserRole::Manager:
+            user = new Manager();
+            break;
+        default:
+            return Response(false, "Invalid user in file.");
+        }
+
+        if (user->deserialize(is).fail())
+        {
+            delete user;
+            continue;
+        }
+        this->pendingUsers_.push_back(user);
+    }
+
+    is.close();
+
+    return Response(true, "Pending users loaded successfully.");
+}
+
+Response UserManager::uploadAll() const
 {
     Response res = this->uploadUsers();
     if (!res.isSuccessful())
@@ -223,21 +335,21 @@ Response UserManager::uploadAll()
     return Response(true, "All users uploaded successfully.");
 }
 
-Response UserManager::uploadUsers()
+Response UserManager::uploadUsers() const
 {
-    std::ofstream os(this->usersFile, std::ios::binary);
+    std::ofstream os(this->USERS_FILE, std::ios::binary);
 
     if (!os.is_open())
     {
         return Response(false, "Failed to open users file.");
     }
 
-    size_t usersCount = this->users.size();
+    size_t usersCount = this->users_.size();
     os.write((const char*)&usersCount, sizeof(usersCount));
 
     for (size_t i = 0; i < usersCount; i++)
     {
-        User* user = this->users[i];
+        User* user = this->users_[i];
 
         if (user)
         {
@@ -250,21 +362,21 @@ Response UserManager::uploadUsers()
     return Response(true, "Users file updated successfully.");
 }
 
-Response UserManager::uploadPendingUsers()
+Response UserManager::uploadPendingUsers() const
 {
-    std::ofstream os(this->pendingUsersFile, std::ios::binary);
+    std::ofstream os(this->PENDING_USERS_FILE, std::ios::binary);
 
     if (!os.is_open())
     {
         return Response(false, "Failed to open pending users file.");
     }
 
-    size_t pendingUsersCount = this->pendingUsers.size();
+    size_t pendingUsersCount = this->pendingUsers_.size();
     os.write((const char*)&pendingUsersCount, sizeof(pendingUsersCount));
 
     for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        User* user = this->pendingUsers[i];
+        User* user = this->pendingUsers_[i];
 
         if (user)
         {
@@ -277,96 +389,14 @@ Response UserManager::uploadPendingUsers()
     return Response(true, "Pending users file updated successfully.");
 }
 
-Response UserManager::loadUsers()
-{
-    std::ifstream is(this->usersFile, std::ios::binary);
-
-    if (!is.is_open())
-    {
-        return Response(false, "Failed to open users file.");
-    }
-
-    this->users.clear();
-
-    size_t usersCount = 0;
-    is.read((char*)&usersCount, sizeof(usersCount));
-
-    for (size_t i = 0; i < usersCount; i++)
-    {
-        UserRole role = UserRole::None;
-        is.read((char*)&role, sizeof(role));
-
-        User* user = nullptr;
-        switch (role)
-        {
-        case UserRole::Cashier:
-            user = new Cashier();
-            break;
-        case UserRole::Manager:
-            user = new Manager();
-            break;
-        default:
-            return Response(false, "Invalid user in file.");
-        }
-
-        user->deserialize(is);
-        this->users.push_back(user);
-    }
-
-    is.close();
-
-    return Response(true, "Users loaded successfully.");
-}
-
-Response UserManager::loadPendingUsers()
-{
-    std::ifstream is(this->pendingUsersFile, std::ios::binary);
-
-    if (!is.is_open())
-    {
-        return Response(false, "Failed to open pending users file.");
-    }
-
-    this->pendingUsers.clear();
-
-    size_t usersCount = 0;
-    is.read((char*)&usersCount, sizeof(usersCount));
-
-    for (size_t i = 0; i < usersCount; i++)
-    {
-        UserRole role = UserRole::None;
-        is.read((char*)&role, sizeof(role));
-
-        User* user = nullptr;
-        switch (role)
-        {
-        case UserRole::Cashier:
-            user = new Cashier();
-            break;
-        case UserRole::Manager:
-            user = new Manager();
-            break;
-        default:
-            return Response(false, "Invalid user in file.");
-        }
-
-        user->deserialize(is);
-        this->pendingUsers.push_back(user);
-    }
-
-    is.close();
-
-    return Response(true, "Pending users loaded successfully.");
-}
-
 User* UserManager::getUserById(size_t id) const
 {
-    size_t usersCount = this->users.size();
+    size_t usersCount = this->users_.size();
     for (size_t i = 0; i < usersCount; i++)
     {
-        if (this->users[i]->getId() == id)
+        if (this->users_[i]->getId() == id)
         {
-            return this->users[i];
+            return this->users_[i];
         }
     }
     return nullptr;
@@ -374,12 +404,12 @@ User* UserManager::getUserById(size_t id) const
 
 User* UserManager::getPendingUserById(size_t id) const
 {
-    size_t pendingUsersCount = this->pendingUsers.size();
+    size_t pendingUsersCount = this->pendingUsers_.size();
     for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        if (this->pendingUsers[i]->getId() == id)
+        if (this->pendingUsers_[i]->getId() == id)
         {
-            return this->pendingUsers[i];
+            return this->pendingUsers_[i];
         }
     }
     return nullptr;
@@ -387,63 +417,63 @@ User* UserManager::getPendingUserById(size_t id) const
 
 const Vector<User*>& UserManager::getUsers() const
 {
-    return this->users;
+    return this->users_;
 }
 
 const Vector<User*>& UserManager::getPendingUsers() const
 {
-    return this->pendingUsers;
+    return this->pendingUsers_;
 }
 
 User* UserManager::getCurrentUser() const
 {
-    return this->currentUser;
+    return this->currentUser_;
 }
 
-size_t UserManager::getNextUserId()
+size_t UserManager::getNextUserId() const
 {
-    size_t maxId = this->baseUserId - 1;
-    size_t usersCount = this->users.size();
+    size_t maxId = this->BASE_USER_ID - 1;
+    size_t usersCount = this->users_.size();
     for (size_t i = 0; i < usersCount; i++)
     {
-        maxId = std::max(maxId, this->users[i]->getId());
+        maxId = std::max(maxId, this->users_[i]->getId());
     }
-    size_t pendingUsersCount = this->pendingUsers.size();
+    size_t pendingUsersCount = this->pendingUsers_.size();
     for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        maxId = std::max(maxId, this->pendingUsers[i]->getId());
+        maxId = std::max(maxId, this->pendingUsers_[i]->getId());
     }
     return maxId + 1;
 }
 
 void UserManager::freeUsers()
 {
-    size_t usersCount = this->users.size();
+    size_t usersCount = this->users_.size();
     for (size_t i = 0; i < usersCount; i++)
     {
-        delete this->users[i];
+        delete this->users_[i];
     }
 }
 
 void UserManager::freePendingUsers()
 {
-    size_t pendingUsersCount = this->pendingUsers.size();
+    size_t pendingUsersCount = this->pendingUsers_.size();
     for (size_t i = 0; i < pendingUsersCount; i++)
     {
-        delete this->pendingUsers[i];
+        delete this->pendingUsers_[i];
     }
 }
 
 void UserManager::copyFrom(const UserManager& other)
 {
-    this->users = other.users;
-    this->pendingUsers = other.pendingUsers;
-    this->currentUser = other.currentUser;
+    this->users_ = other.users_;
+    this->pendingUsers_ = other.pendingUsers_;
+    this->currentUser_ = other.currentUser_;
 }
 
 void UserManager::free()
 {
-    this->currentUser = nullptr;
+    this->currentUser_ = nullptr;
     this->freeUsers();
     this->freePendingUsers();
 }

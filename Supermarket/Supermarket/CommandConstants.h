@@ -48,4 +48,15 @@ namespace CommandConstants
 		constexpr size_t CASHIER_ID_INDEX = 1;
 		constexpr size_t SPECIAL_CODE_INDEX = 2;
 	}
+
+	namespace ListProducts
+	{
+		constexpr size_t INPUT_SIZE = 1;
+	}
+
+	namespace LoadProducts
+	{
+		constexpr size_t INPUT_SIZE = 2;
+		constexpr size_t FILE_NAME_INDEX = 1;
+	}
 }

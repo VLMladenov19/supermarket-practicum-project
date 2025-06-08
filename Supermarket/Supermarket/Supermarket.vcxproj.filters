@@ -25,9 +25,6 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{ef9055ab-ee24-4a43-8911-92e015a082aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Products">
-      <UniqueIdentifier>{cbaf0a3a-9d3c-4ed3-99db-8ebf906290c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Users">
       <UniqueIdentifier>{73f47796-359b-493f-a11d-75e188b458f7}</UniqueIdentifier>
     </Filter>
@@ -36,6 +33,9 @@
     </Filter>
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{5f05b36b-69a3-4ad7-9f76-ad24f68b6e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Products">
+      <UniqueIdentifier>{cbaf0a3a-9d3c-4ed3-99db-8ebf906290c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +81,9 @@
     <ClInclude Include="CommandConstants.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="ProductManager.h">
+      <Filter>Header Files\Products</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="String.cpp">
@@ -118,6 +121,12 @@
     </ClCompile>
     <ClCompile Include="CommandHandler.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ProductManager.cpp">
+      <Filter>Source Files\Products</Filter>
+    </ClCompile>
+    <ClCompile Include="ProductConstants.h">
+      <Filter>Header Files\Products</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

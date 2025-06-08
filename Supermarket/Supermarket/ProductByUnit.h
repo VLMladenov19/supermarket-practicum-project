@@ -6,8 +6,9 @@
 class ProductByUnit : public Product
 {
 public:
-	ProductByUnit(const String& name, const Category& category,
-		size_t priceMinor, size_t quantity);
+	ProductByUnit();
+	ProductByUnit(size_t id, const String& name, 
+		size_t categoryId, size_t priceMinor, size_t quantity);
 
 	ProductType getType() const override;
 
@@ -17,6 +18,12 @@ public:
 
 	void increaseQuantity(size_t amount);
 	Response decreaseQuantity(size_t amount);
+
+	std::ofstream& serialize(std::ofstream& os) const override;
+	std::ifstream& deserialize(std::ifstream& is) override;
+	Response deserializeFromTokens(const Vector<String>& tokens) override;
+	
+	String toString() const override;
 
 private:
 	size_t quantity_;

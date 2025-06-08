@@ -6,8 +6,9 @@
 class ProductByWeight : public Product
 {
 public:
-	ProductByWeight(const String& name, const Category& category,
-		size_t priceMinor, double weight);
+	ProductByWeight();
+	ProductByWeight(size_t id, const String& name, 
+		size_t categoryId, size_t priceMinor, double weight);
 
 	ProductType getType() const override;
 
@@ -17,6 +18,12 @@ public:
 
 	void increaseWeight(double amount);
 	Response decreaseWeight(double amount);
+
+	std::ofstream& serialize(std::ofstream& os) const override;
+	std::ifstream& deserialize(std::ifstream& is) override;
+	Response deserializeFromTokens(const Vector<String>& tokens) override;
+
+	String toString() const override;
 
 private:
 	double weight_;

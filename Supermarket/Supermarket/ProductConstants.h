@@ -1,0 +1,44 @@
+#pragma once
+
+#include "String.h"
+
+namespace ProductConstants
+{
+	namespace File
+	{
+		const String PRODUCTS_FILE = "files/products.txt";
+	}
+
+	namespace LoadProduct
+	{
+		const size_t TOKENS_SIZE = 6;
+		const size_t TYPE_INDEX = 0;
+		const size_t ID_INDEX = 1;
+		const size_t NAME_INDEX = 2;
+		const size_t CATEGORY_ID_INDEX = 3;
+		const size_t PRICE_MINOR_INDEX = 4;
+		const size_t QUANTITY_INDEX = 5;
+		const size_t WEIGHT_INDEX = 5;
+	}
+
+	namespace NewProduct
+	{
+		const size_t BASE_PRODUCT_ID = 100;
+		const size_t INPUT_SIZE = 6;
+		const size_t TYPE_INDEX = 1;
+		const size_t NAME_INDEX = 2;
+		const size_t CATEGORY_ID_INDEX = 3;
+		const size_t PRICE_MINOR_INDEX = 4;
+		const size_t QUANTITY_INDEX = 5;
+		const size_t WEIGHT_INDEX = 5;
+	}
+
+	namespace IncreaseProduct
+	{
+		const size_t INPUT_SIZE = 3;
+		const size_t TYPE_INDEX = 0;
+		const size_t ID_INDEX = 1;
+		const size_t QUANTITY_INDEX = 2;
+		const size_t WEIGHT_INDEX = 2;
+	}
+}

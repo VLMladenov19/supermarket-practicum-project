@@ -3,11 +3,13 @@
 #include "Vector.h"
 #include "String.h"
 #include "UserManager.h"
+#include "ProductManager.h"
 
 class CommandHandler
 {
 public:
-	CommandHandler(UserManager& userManager);
+	CommandHandler(UserManager& userManager, 
+		ProductManager& productManager);
 
 	void dispatch(const Vector<String>& inputs);
 
@@ -23,9 +25,13 @@ public:
 	void promoteCashier(const Vector<String>& inputs);
 	void fireCashier(const Vector<String>& inputs);
 
+	void listProducts(const Vector<String>& inputs);
+	void loadNewProducts(const Vector<String>& inputs);
+
 private:
 	void addCashier(const Vector<String>& inputs);
 	void addManager(const Vector<String>& inputs);
 
 	UserManager& userManager_;
+	ProductManager& productManager_;
 };

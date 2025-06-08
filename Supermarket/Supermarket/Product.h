@@ -1,7 +1,10 @@
 #pragma once
 
+#include <fstream>
+
 #include "String.h"
 #include "Category.h"
+#include "Response.h"
 
 enum class ProductType
 {
@@ -16,21 +19,32 @@ ProductType strToType(const String& str);
 class Product
 {
 public:
-	Product(const String& name, const Category& category, size_t priceMinor);
+	Product();
+	Product(size_t id, const String& name, 
+		size_t categoryId, size_t priceMinor);
 
 	virtual ProductType getType() const = 0;
+	size_t getId() const;
 	const String& getName() const;
-	const Category& getCategory() const;
+	size_t getCategoryId() const;
 	size_t getPriceMinor() const;
-
-	void setName(const String& name);
-	void setCategory(const Category& category);
-	void setPriceMinor(size_t priceMinor);
-	
 	String getPriceString() const;
 
+	void setName(const String& name);
+	void setCategoryId(size_t categoryId);
+	void setPriceMinor(size_t priceMinor);
+
+	virtual std::ofstream& serialize(std::ofstream& os) const = 0;
+	virtual std::ifstream& deserialize(std::ifstream& is) = 0;
+	virtual Response deserializeFromTokens(const Vector<String>& tokens);
+
+	virtual String toString() const;
+
 protected:
+	size_t id_;
 	String name_;
-	Category category_;
+	size_t categoryId_;
 	size_t priceMinor_; // Price is stored in minor units for accuracy
+
+	void setId(size_t id);
 };

@@ -27,6 +27,7 @@
     <ClInclude Include="Product.h" />
     <ClInclude Include="ProductByUnit.h" />
     <ClInclude Include="ProductByWeight.h" />
+    <ClInclude Include="ProductManager.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Response.h" />
     <ClInclude Include="String.h" />
@@ -43,6 +44,8 @@
     <ClCompile Include="Product.cpp" />
     <ClCompile Include="ProductByUnit.cpp" />
     <ClCompile Include="ProductByWeight.cpp" />
+    <ClCompile Include="ProductConstants.h" />
+    <ClCompile Include="ProductManager.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="String.cpp" />
     <ClCompile Include="User.cpp" />

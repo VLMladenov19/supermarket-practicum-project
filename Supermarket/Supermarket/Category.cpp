@@ -5,6 +5,11 @@ Category::Category(String name, String description)
 {
 }
 
+size_t Category::getId() const
+{
+	return this->id_;
+}
+
 const String& Category::getName() const
 {
 	return this->name_;
@@ -23,4 +28,9 @@ void Category::setName(const String& name)
 void Category::setDescription(const String& description)
 {
 	this->description_ = description;
+}
+
+void Category::setId(size_t id)
+{
+	this->id_ = id;
 }
