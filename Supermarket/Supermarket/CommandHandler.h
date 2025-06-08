@@ -17,15 +17,17 @@ public:
 	void logout(const Vector<String>& inputs);
 	void addUser(const Vector<String>& inputs);
 	void removeCurrentUser(const Vector<String>& inputs);
+	void fireCashier(const Vector<String>& inputs);
 	void listCurrentUserData(const Vector<String>& inputs);
 	void listUsers(const Vector<String>& inputs);
 	void listPending(const Vector<String>& inputs);
 	void approvePending(const Vector<String>& inputs);
 	void declinePending(const Vector<String>& inputs);
 	void promoteCashier(const Vector<String>& inputs);
-	void fireCashier(const Vector<String>& inputs);
 
 	void addCategory(const Vector<String>& inputs);
+	void deleteCategory(const Vector<String>& inputs);
+
 	void listProducts(const Vector<String>& inputs);
 	void listProductsByCategory(const Vector<String>& inputs);
 	void listCategories(const Vector<String>& inputs);

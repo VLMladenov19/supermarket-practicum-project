@@ -40,6 +40,20 @@ Response ProductManager::addCategory(Category* category)
     return this->uploadCategories();
 }
 
+Response ProductManager::removeCategory(size_t id)
+{
+    size_t categoriesCount = this->categories_.size();
+    for (size_t i = 0; i < categoriesCount; i++)
+    {
+        if (this->categories_[i]->getId() == id)
+        {
+            this->categories_.remove(i);
+            return this->uploadCategories();
+        }
+    }
+    return Response(false, "Invalid id.");
+}
+
 Response ProductManager::loadAll()
 {
     Response res = this->loadProducts();
@@ -372,6 +386,20 @@ Category* ProductManager::getCategoryByName(const String& name)
         }
     }
     return nullptr;
+}
+
+Vector<Product*> ProductManager::getProductsByCategoryId(size_t categoryId)
+{
+    Vector<Product*> products;
+    size_t productsCount = this->products_.size();
+    for (size_t i = 0; i < productsCount; i++)
+    {
+        if (this->products_[i]->getCategoryId() == categoryId)
+        {
+            return products.push_back(this->products_[i]);
+        }
+    }
+    return products;
 }
 
 size_t ProductManager::getNextProductId() const

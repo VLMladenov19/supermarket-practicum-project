@@ -15,3 +15,9 @@ User (ID: 104) logged in
 <104> Manager: c1 c1 1234567890 20 successfully left the job.
 User (ID: 103) logged in
 User (ID: 103) logged in
+User (ID: 103) logged in
+<103> Manager: m2 m2 1234567890 20 added new category: "Chocolates:" with description: "".
+User (ID: 103) logged in
+<103> Manager: m2 m2 1234567890 20 deleted category with ID: 104.
+<103> Manager: m2 m2 1234567890 20 deleted category with ID: 102.
+User (ID: 103) logged in

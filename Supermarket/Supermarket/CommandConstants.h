@@ -56,6 +56,12 @@ namespace CommandConstants
 		constexpr size_t DESCRIPTION_INDEX = 2;
 	}
 
+	namespace DeleteCategory
+	{
+		constexpr size_t INPUT_SIZE = 2;
+		constexpr size_t CATEGORY_ID_INDEX = 1;
+	}
+
 	namespace ListProducts
 	{
 		constexpr size_t INPUT_SIZE = 1;

@@ -1,5 +1,4 @@
-4
+3
 100:Register:Products that can be found on the register
 101:Fruits:...
-102:...:...
 103:Vegetables:

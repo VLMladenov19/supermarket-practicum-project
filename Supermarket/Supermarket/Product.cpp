@@ -115,9 +115,9 @@ String Product::toString() const
 	productInfo += String::toString(this->getId());
 	productInfo += "> ";
 	productInfo += typeToStr(this->getType()) + ": ";
-	productInfo += name_ + " ";
-	productInfo += categoryId_ + " ";
-	productInfo += String::toString(priceMinor_);
+	productInfo += name_ + " from category <";
+	productInfo += String::toString(categoryId_) + "> ";
+	productInfo += String::toString(priceMinor_ / 100.0);
 
 	return productInfo;
 }

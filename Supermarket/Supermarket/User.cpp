@@ -181,7 +181,7 @@ String User::toString() const
     userInfo += roleToStr(this->getRole()) + ": ";
     userInfo += firstName_ + " " + lastName_ + " ";
     userInfo += phoneNumber_ + " ";
-    userInfo += String::toString(age_);
+    userInfo += String::toString((size_t)age_);
 
     return userInfo;
 }

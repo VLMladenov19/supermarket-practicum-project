@@ -81,7 +81,7 @@ Response ProductByWeight::deserializeFromTokens(const Vector<String>& tokens)
 
 	this->setWeight(
 		tokens[ProductConstants::LoadProduct::QUANTITY_INDEX]
-		.toNumber() / 100.0);
+		.toNumber() / 1000.0);
 
 	return Response(true, "Product values deserialized.");
 }
@@ -90,10 +90,19 @@ String ProductByWeight::toString() const
 {
 	String productInfo = Product::toString();
 
-	size_t weightInGrams = this->weight_ * 100;
-	productInfo += " " + String::toString(weightInGrams / 100);
+	size_t weightInGrams = this->weight_ * 1000;
+	productInfo += " " + String::toString(weightInGrams / 1000);
 	productInfo.push_back('.');
-	productInfo += String::toString(weightInGrams % 100);
+	if (weightInGrams % 1000 < 10)
+	{
+		productInfo.push_back('0');
+	}
+	if (weightInGrams % 1000 < 100)
+	{
+		productInfo.push_back('0');
+	}
+	productInfo += String::toString(weightInGrams % 1000);
+	//productInfo += String::toString(this->weight_);
 
 	return productInfo;
 }

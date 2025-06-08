@@ -169,6 +169,36 @@ String String::toString(size_t num)
 	return result;
 }
 
+String String::toString(double num)
+{
+	if (num == 0.0)
+	{
+		return String("0.00");
+	}
+
+	String result;
+	if (num < 0)
+	{
+		result.push_back('-');
+		num = -num;
+	}
+
+	size_t integerPart = (size_t)num;
+	double fractionalPart = num - (double)integerPart;
+	
+	result += String::toString(integerPart);
+	result.push_back('.');
+
+	fractionalPart *= 100;
+	size_t fractionAsInt = (size_t)(fractionalPart + 0.5);
+
+	if (fractionAsInt < 10)
+		result.push_back('0');
+	result += String::toString(fractionAsInt);
+
+	return result;
+}
+
 String& String::append(const String& other)
 {
 	*this += other;

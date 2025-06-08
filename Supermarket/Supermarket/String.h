@@ -24,6 +24,7 @@ public:
 	String toUpper() const;
 	size_t toNumber() const;
 	static String toString(size_t num);
+	static String toString(double num);
 
 	String& append(const String& other);
 	String& append(const char* data);

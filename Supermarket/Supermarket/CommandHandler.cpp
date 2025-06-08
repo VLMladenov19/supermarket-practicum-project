@@ -89,6 +89,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return addCategory(inputs);
 	}
+	if (command == "delete-category")
+	{
+		return deleteCategory(inputs);
+	}
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
@@ -181,6 +185,36 @@ void CommandHandler::removeCurrentUser(const Vector<String>& inputs)
 	std::cout << "Worker successfully left job.\n";
 
 	logMessage += " successfully left the job.";
+	Logger::log(logMessage);
+}
+
+void CommandHandler::fireCashier(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::ManageCashier;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Response res = this->userManager_.fireCashier(
+		inputs[CASHIER_ID_INDEX].toNumber(),
+		inputs[SPECIAL_CODE_INDEX]);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Cashier fired successfully!\n";
+
+	size_t cashierId = inputs[CASHIER_ID_INDEX].toNumber();
+	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
+		") fired cashier with ID: " + String::toString(cashierId);
 	Logger::log(logMessage);
 }
 
@@ -337,36 +371,6 @@ void CommandHandler::promoteCashier(const Vector<String>& inputs)
 	Logger::log(logMessage);
 }
 
-void CommandHandler::fireCashier(const Vector<String>& inputs)
-{
-	using namespace CommandConstants::ManageCashier;
-	User* currentUser = this->userManager_.getCurrentUser();
-	if (!currentUser || currentUser->getRole() != UserRole::Manager)
-	{
-		std::cout << "Access denied.\n";
-		return;
-	}
-	if (inputs.size() != INPUT_SIZE)
-	{
-		std::cout << "Invalid inputs.\n";
-		return;
-	}
-	Response res = this->userManager_.fireCashier(
-		inputs[CASHIER_ID_INDEX].toNumber(),
-		inputs[SPECIAL_CODE_INDEX]);
-	if (!res.isSuccessful())
-	{
-		std::cout << res.getMessage() << '\n';
-		return;
-	}
-	std::cout << "Cashier fired successfully!\n";
-
-	size_t cashierId = inputs[CASHIER_ID_INDEX].toNumber();
-	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
-		") fired cashier with ID: " + String::toString(cashierId);
-	Logger::log(logMessage);
-}
-
 void CommandHandler::addCategory(const Vector<String>& inputs)
 {
 	using namespace CommandConstants::AddCategory;
@@ -406,7 +410,48 @@ void CommandHandler::addCategory(const Vector<String>& inputs)
 		std::cout << res.getMessage() << '\n';
 		return;
 	}
-	std::cout << "Category \"" << categoryName << "\" added successfully!\n";
+	std::cout << "Category \"" << categoryName << "\" added successfully!\n"; 
+	
+	String logMessage = currentUser->toString() + " added new category: \"" +
+		categoryName + "\" with description: \"" + categoryDesc + "\".";
+	Logger::log(logMessage);
+}
+
+void CommandHandler::deleteCategory(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::DeleteCategory;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() < INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+
+	size_t categoryId = inputs[CATEGORY_ID_INDEX].toNumber();
+	Vector<Product*> products =
+		this->productManager_.getProductsByCategoryId(categoryId);
+	if (products.size() != 0)
+	{
+		std::cout << "Category has products and can't be deleted.\n";
+		return;
+	}
+
+	Response res = this->productManager_.removeCategory(categoryId);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Category deleted successfully.\n";
+
+	String logMessage = currentUser->toString() + " deleted category with ID: " +
+		String::toString(categoryId) + ".";
+	Logger::log(logMessage);
 }
 
 void CommandHandler::listProducts(const Vector<String>& inputs)

@@ -14,6 +14,7 @@ public:
 
 	Response addProduct(Product* product);
 	Response addCategory(Category* category);
+	Response removeCategory(size_t id);
 
 	Response loadAll();
 	Response loadProducts();
@@ -26,6 +27,7 @@ public:
 	Product* getProductById(size_t id);
 	Category* getCategoryById(size_t id);
 	Category* getCategoryByName(const String& name);
+	Vector<Product*> getProductsByCategoryId(size_t categoryId);
 
 	size_t getNextProductId() const;
 	size_t getNextCategoryId() const;
