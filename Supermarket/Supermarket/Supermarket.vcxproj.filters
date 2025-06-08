@@ -84,6 +84,9 @@
     <ClInclude Include="ProductManager.h">
       <Filter>Header Files\Products</Filter>
     </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="String.cpp">

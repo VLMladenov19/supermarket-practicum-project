@@ -42,8 +42,8 @@ void Program::loop()
             if (input.size() >= 2 && 
                 input[0] == '<' && input[input.size() - 1] == '>')
             {
-                input.erase(0, 1);       // Remove the '<'
-                input.pop_back();      // Remove the '>'
+                input.erase(0, 1); // Remove the '<'
+                input.pop_back(); // Remove the '>'
             }
         }
         this->commandHandler_.dispatch(inputs);

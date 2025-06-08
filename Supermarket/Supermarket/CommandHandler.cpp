@@ -2,6 +2,7 @@
 #include "CommandConstants.h"
 #include "Cashier.h"
 #include "Manager.h"
+#include "Logger.h"
 
 CommandHandler::CommandHandler(UserManager& userManager,
 	ProductManager& productManager)
@@ -76,6 +77,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return loadNewProducts(inputs);
 	}
+	if (command == "list-feed")
+	{
+		return listFeed(inputs);
+	}
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
@@ -97,6 +102,10 @@ void CommandHandler::login(const Vector<String>& inputs)
 	}
 	std::cout << "Logged in as " << 
 		this->userManager_.getCurrentUser()->toString() << '\n';
+	String logMessage = "User (ID: " +
+		String::toString(this->userManager_.getCurrentUser()->getId()) +
+		") logged in";
+	Logger::log(logMessage);
 }
 
 void CommandHandler::logout(const Vector<String>& inputs)
@@ -106,9 +115,13 @@ void CommandHandler::logout(const Vector<String>& inputs)
 		std::cout << "Invalid inputs.\n";
 		return;
 	}
-
+	
+	String logMessage = "User(ID: " +
+		String::toString(this->userManager_.getCurrentUser()->getId());
 	Response res = this->userManager_.logout();
 	std::cout << res.getMessage() << '\n';
+	logMessage += (res.isSuccessful()) ? " logged out." : " failed to log out.";
+	Logger::log(logMessage);
 }
 
 void CommandHandler::addUser(const Vector<String>& inputs)
@@ -148,13 +161,19 @@ void CommandHandler::removeCurrentUser(const Vector<String>& inputs)
 		std::cout << "User not logged in.\n";
 		return;
 	}
+	String logMessage = currentUser->toString();
 	Response res = this->userManager_.removeUser(currentUser->getId());
 	if (!res.isSuccessful())
 	{
+		logMessage += " attempted to leave job, but failed.";
+		Logger::log(logMessage);
 		std::cout << res.getMessage() << '\n';
 		return;
 	}
 	std::cout << "Worker successfully left job.\n";
+
+	logMessage += " successfully left the job.";
+	Logger::log(logMessage);
 }
 
 void CommandHandler::listCurrentUserData(const Vector<String>& inputs)
@@ -243,6 +262,11 @@ void CommandHandler::approvePending(const Vector<String>& inputs)
 		return;
 	}
 	std::cout << "Cashier approved successfully!\n";
+
+	size_t cashierId = inputs[CASHIER_ID_INDEX].toNumber();
+	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
+		") approved pending cashier with ID: " + String::toString(cashierId);
+	Logger::log(logMessage);
 }
 
 void CommandHandler::declinePending(const Vector<String>& inputs)
@@ -268,6 +292,11 @@ void CommandHandler::declinePending(const Vector<String>& inputs)
 		return;
 	}
 	std::cout << "Cashier declined successfully!\n";
+
+	size_t cashierId = inputs[CASHIER_ID_INDEX].toNumber();
+	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
+		") declined pending cashier with ID: " + String::toString(cashierId);
+	Logger::log(logMessage);
 }
 
 void CommandHandler::promoteCashier(const Vector<String>& inputs)
@@ -293,6 +322,11 @@ void CommandHandler::promoteCashier(const Vector<String>& inputs)
 		return;
 	}
 	std::cout << "Cashier promoted successfully!\n";
+
+	size_t cashierId = inputs[CASHIER_ID_INDEX].toNumber();
+	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
+		") promoted cashier with ID: " + String::toString(cashierId);
+	Logger::log(logMessage);
 }
 
 void CommandHandler::fireCashier(const Vector<String>& inputs)
@@ -318,6 +352,11 @@ void CommandHandler::fireCashier(const Vector<String>& inputs)
 		return;
 	}
 	std::cout << "Cashier fired successfully!\n";
+
+	size_t cashierId = inputs[CASHIER_ID_INDEX].toNumber();
+	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
+		") fired cashier with ID: " + String::toString(cashierId);
+	Logger::log(logMessage);
 }
 
 void CommandHandler::listProducts(const Vector<String>& inputs)
@@ -388,7 +427,25 @@ void CommandHandler::loadNewProducts(const Vector<String>& inputs)
 		std::cout << res.getMessage() << '\n';
 		return;
 	}
-	std::cout << "Products loaded successfully.\n";
+	std::cout << "Products loaded successfully.\n"; 
+	String logMsg = "Manager " + currentUser->getFirstName() + " loaded products from " + fileName;
+	Logger::log(logMsg);
+}
+
+void CommandHandler::listFeed(const Vector<String>& inputs)
+{
+	std::ifstream is("files/feed_log.txt");
+	if (!is.is_open()) {
+		std::cout << "Could not open feed log file.";
+		return;
+	}
+
+	String line;
+	while (getline(is, line)) {
+		std::cout << line << '\n';
+	}
+
+	is.close();
 }
 
 void CommandHandler::addCashier(const Vector<String>& inputs)
@@ -416,6 +473,10 @@ void CommandHandler::addCashier(const Vector<String>& inputs)
 	}
 	std::cout << "Cashier info " << cashier->toString() << '\n';
 	std::cout << "Cashier registered, awaiting approval from a manager.\n";
+
+	String logMessage = "Cashier registered: " + cashier->toString() +
+		" (awaiting approval)";
+	Logger::log(logMessage);
 }
 
 void CommandHandler::addManager(const Vector<String>& inputs)
@@ -445,4 +506,9 @@ void CommandHandler::addManager(const Vector<String>& inputs)
 	std::cout << "Manager registered successfully!\n";
 	std::cout << "Special code: " << manager->getSpecialCode() << '\n';
 	std::cout << "Code: " << manager->getId() << "_special_code.txt\n";
+
+	String logMessage = "Manager registered: " + manager->toString() +
+		", special code: " + manager->getSpecialCode() +
+		" (written to file " + String::toString(manager->getId()) + "_special_code.txt)";
+	Logger::log(logMessage);
 }

@@ -29,6 +29,8 @@ public:
 	void listProductsByCategory(const Vector<String>& inputs);
 	void loadNewProducts(const Vector<String>& inputs);
 
+	void listFeed(const Vector<String>& inputs);
+
 private:
 	void addCashier(const Vector<String>& inputs);
 	void addManager(const Vector<String>& inputs);
