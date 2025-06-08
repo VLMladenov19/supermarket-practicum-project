@@ -544,7 +544,6 @@ std::istream& getline(std::istream& is, String& str, char delim)
 			break;
 		str.push_back(ch);
 	}
-	str.push_back('\0');
 
 	return is;
 }
