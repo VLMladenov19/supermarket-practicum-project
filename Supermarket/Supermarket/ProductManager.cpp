@@ -28,6 +28,18 @@ ProductManager::~ProductManager()
     this->free();
 }
 
+Response ProductManager::addProduct(Product* product)
+{
+    this->products_.push_back(product);
+    return this->uploadProducts();
+}
+
+Response ProductManager::addCategory(Category* category)
+{
+    this->categories_.push_back(category);
+    return this->uploadCategories();
+}
+
 Response ProductManager::loadAll()
 {
     Response res = this->loadProducts();
@@ -35,8 +47,12 @@ Response ProductManager::loadAll()
     {
         return res;
     }
-
-    return Response(true, "All products loaded successfully.");
+    res = this->loadCategories();
+    if (!res.isSuccessful())
+    {
+        return res;
+    }
+    return Response(true, "All products and categories loaded successfully.");
 }
 
 Response ProductManager::loadProducts()
@@ -103,7 +119,7 @@ Response ProductManager::loadProducts()
 
     is.close();
 
-    return Response(true, "Users loaded successfully.");
+    return Response(true, "Products loaded successfully.");
 }
 
 Response ProductManager::loadNewProducts(String filename)
@@ -224,8 +240,45 @@ Response ProductManager::loadNewProducts(String filename)
 
 Response ProductManager::loadCategories()
 {
-    std::ifstream is("test.txt");
-    return Response(true);
+    std::ifstream is(ProductConstants::File::CATEGORIES_FILE);
+
+    if (!is.is_open())
+    {
+        std::ofstream createFile(ProductConstants::File::CATEGORIES_FILE);
+        if (!createFile.is_open())
+        {
+            return Response(false, "Failed to create categories file.");
+        }
+        createFile.close();
+
+        // Retry opening after creation
+        is.open(ProductConstants::File::CATEGORIES_FILE);
+        if (!is.is_open())
+        {
+            return Response(false, "Failed to open categories file after creation.");
+        }
+    }
+
+    this->categories_.clear();
+
+    size_t categoriesCount = 0;
+    is >> categoriesCount;
+    is.ignore();
+
+    for (size_t i = 0; i < categoriesCount; i++)
+    {
+        Category* category = new Category();
+
+        if (category->deserialize(is).fail())
+        {
+            delete category;
+            continue;
+        }
+
+        this->categories_.push_back(category);
+    }
+
+    return Response(true, "Categories loaded successfully.");
 }
 
 Response ProductManager::uploadProducts()
@@ -247,6 +300,33 @@ Response ProductManager::uploadProducts()
         if (product)
         {
             product->serialize(os);
+        }
+    }
+
+    os.close();
+
+    return Response(true, "Users file updated successfully.");
+}
+
+Response ProductManager::uploadCategories()
+{
+    std::ofstream os(ProductConstants::File::CATEGORIES_FILE, std::ios::binary);
+
+    if (!os.is_open())
+    {
+        return Response(false, "Failed to open categories file.");
+    }
+
+    size_t categoriesCount = this->categories_.size();
+    os << categoriesCount << '\n';
+
+    for (size_t i = 0; i < categoriesCount; i++)
+    {
+        Category* category = this->categories_[i];
+
+        if (category)
+        {
+            category->serialize(os);
         }
     }
 
@@ -296,7 +376,7 @@ Category* ProductManager::getCategoryByName(const String& name)
 
 size_t ProductManager::getNextProductId() const
 {
-    size_t maxId = ProductConstants::NewProduct::BASE_PRODUCT_ID - 1;
+    size_t maxId = ProductConstants::BASE_ID - 1;
     size_t productsCount = this->products_.size();
     for (size_t i = 0; i < productsCount; i++)
     {
@@ -305,9 +385,25 @@ size_t ProductManager::getNextProductId() const
     return maxId + 1;
 }
 
+size_t ProductManager::getNextCategoryId() const
+{
+    size_t maxId = ProductConstants::BASE_ID - 1;
+    size_t categoriesCount = this->categories_.size();
+    for (size_t i = 0; i < categoriesCount; i++)
+    {
+        maxId = std::max(maxId, this->categories_[i]->getId());
+    }
+    return maxId + 1;
+}
+
 const Vector<Product*> ProductManager::getProducts() const
 {
     return this->products_;
+}
+
+const Vector<Category*> ProductManager::getCategories() const
+{
+    return this->categories_;
 }
 
 void ProductManager::copyFrom(const ProductManager& other)

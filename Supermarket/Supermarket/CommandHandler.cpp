@@ -73,6 +73,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 			return listProductsByCategory(inputs);
 		}
 	}
+	if (command == "list-categories")
+	{
+		return listCategories(inputs);
+	}
 	if (command == "load-products")
 	{
 		return loadNewProducts(inputs);
@@ -80,6 +84,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	if (command == "list-feed")
 	{
 		return listFeed(inputs);
+	}
+	if (command == "add-category")
+	{
+		return addCategory(inputs);
 	}
 }
 
@@ -359,6 +367,48 @@ void CommandHandler::fireCashier(const Vector<String>& inputs)
 	Logger::log(logMessage);
 }
 
+void CommandHandler::addCategory(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::AddCategory;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	size_t inputSize = inputs.size();
+	if (inputSize < INPUT_MIN_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+
+	String categoryName = inputs[NAME_INDEX];
+	String categoryDesc;
+	for (size_t i = DESCRIPTION_INDEX; i < inputSize; i++)
+	{
+		if (i > DESCRIPTION_INDEX)
+		{
+			categoryDesc.push_back(' ');
+		}
+		categoryDesc += inputs[i];
+	}
+
+
+	Category* category = new Category(
+		this->productManager_.getNextCategoryId(),
+		categoryName, 
+		categoryDesc
+	);
+	Response res = this->productManager_.addCategory(category);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Category \"" << categoryName << "\" added successfully!\n";
+}
+
 void CommandHandler::listProducts(const Vector<String>& inputs)
 {
 	if (inputs.size() != CommandConstants::ListProducts::INPUT_SIZE)
@@ -402,6 +452,26 @@ void CommandHandler::listProductsByCategory(const Vector<String>& inputs)
 	if (!hasProductsFromCategory)
 	{
 		std::cout << "No products!\n";
+	}
+}
+
+void CommandHandler::listCategories(const Vector<String>& inputs)
+{
+	if (inputs.size() != CommandConstants::ListCategories::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Vector<Category*> categories = this->productManager_.getCategories();
+	size_t categoriesCount = categories.size();
+	if (!categoriesCount)
+	{
+		std::cout << "No products!\n";
+		return;
+	}
+	for (size_t i = 0; i < categoriesCount; i++)
+	{
+		std::cout << categories[i]->toString() << '\n';
 	}
 }
 

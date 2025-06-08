@@ -49,6 +49,13 @@ namespace CommandConstants
 		constexpr size_t SPECIAL_CODE_INDEX = 2;
 	}
 
+	namespace AddCategory
+	{
+		constexpr size_t INPUT_MIN_SIZE = 2;
+		constexpr size_t NAME_INDEX = 1;
+		constexpr size_t DESCRIPTION_INDEX = 2;
+	}
+
 	namespace ListProducts
 	{
 		constexpr size_t INPUT_SIZE = 1;
@@ -58,6 +65,11 @@ namespace CommandConstants
 	{
 		constexpr size_t INPUT_SIZE = 2;
 		constexpr size_t CATEGORY_ID_INDEX = 1;
+	}
+
+	namespace ListCategories
+	{
+		constexpr size_t INPUT_SIZE = 1;
 	}
 
 	namespace LoadProducts

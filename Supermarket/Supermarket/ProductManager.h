@@ -13,6 +13,7 @@ public:
 	~ProductManager();
 
 	Response addProduct(Product* product);
+	Response addCategory(Category* category);
 
 	Response loadAll();
 	Response loadProducts();
@@ -20,14 +21,17 @@ public:
 	Response loadCategories();
 
 	Response uploadProducts();
+	Response uploadCategories();
 
 	Product* getProductById(size_t id);
 	Category* getCategoryById(size_t id);
 	Category* getCategoryByName(const String& name);
 
 	size_t getNextProductId() const;
+	size_t getNextCategoryId() const;
 
 	const Vector<Product*> getProducts() const;
+	const Vector<Category*> getCategories() const;
 
 private:
 	Vector<Product*> products_;
