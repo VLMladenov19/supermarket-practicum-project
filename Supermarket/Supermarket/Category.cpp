@@ -46,7 +46,7 @@ std::ofstream& Category::serialize(std::ofstream& os) const
 
 std::ifstream& Category::deserialize(std::ifstream& is)
 {
-	using namespace ProductConstants::LoadCategory;
+	using namespace ProductConstants::DeserializeCategory;
 	String line;
 	getline(is, line);
 

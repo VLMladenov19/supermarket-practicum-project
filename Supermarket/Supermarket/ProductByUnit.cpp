@@ -55,7 +55,7 @@ std::ofstream& ProductByUnit::serialize(std::ofstream& os) const
 
 std::ifstream& ProductByUnit::deserialize(std::ifstream& is)
 {
-	using namespace ProductConstants::LoadProduct;
+	using namespace ProductConstants::DeserializeProduct;
 	String line;
 	if (!getline(is, line))
 	{
@@ -79,7 +79,7 @@ Response ProductByUnit::deserializeFromTokens(const Vector<String>& tokens)
 	Product::deserializeFromTokens(tokens);
 
 	this->setQuantity(
-		tokens[ProductConstants::LoadProduct::QUANTITY_INDEX]
+		tokens[ProductConstants::DeserializeProduct::QUANTITY_INDEX]
 		.toNumber());
 
 	return Response(true, "Product values deserialized.");

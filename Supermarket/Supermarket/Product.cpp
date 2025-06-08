@@ -98,7 +98,7 @@ std::ofstream& Product::serialize(std::ofstream& os) const
 
 Response Product::deserializeFromTokens(const Vector<String>& tokens)
 {
-	using namespace ProductConstants::LoadProduct;
+	using namespace ProductConstants::DeserializeProduct;
 	this->setId(tokens[ID_INDEX].toNumber());
 	this->setName(tokens[NAME_INDEX]);
 	this->setCategoryId(tokens[CATEGORY_ID_INDEX].toNumber());

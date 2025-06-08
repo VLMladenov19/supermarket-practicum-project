@@ -25,6 +25,7 @@ public:
 	Response uploadCategories();
 
 	Product* getProductById(size_t id);
+	Product* getProductByName(const String& name);
 	Category* getCategoryById(size_t id);
 	Category* getCategoryByName(const String& name);
 	Vector<Product*> getProductsByCategoryId(size_t categoryId);

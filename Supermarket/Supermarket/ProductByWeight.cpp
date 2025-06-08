@@ -48,14 +48,14 @@ std::ofstream& ProductByWeight::serialize(std::ofstream& os) const
 {
 	Product::serialize(os);
 
-	os << (size_t)(this->weight_ * 100) << '\n';
+	os << (size_t)(this->weight_ * 1000) << '\n';
 
 	return os;
 }
 
 std::ifstream& ProductByWeight::deserialize(std::ifstream& is)
 {
-	using namespace ProductConstants::LoadProduct;
+	using namespace ProductConstants::DeserializeProduct;
 	String line;
 	if (!getline(is, line))
 	{
@@ -80,7 +80,7 @@ Response ProductByWeight::deserializeFromTokens(const Vector<String>& tokens)
 	Product::deserializeFromTokens(tokens);
 
 	this->setWeight(
-		tokens[ProductConstants::LoadProduct::QUANTITY_INDEX]
+		tokens[ProductConstants::DeserializeProduct::QUANTITY_INDEX]
 		.toNumber() / 1000.0);
 
 	return Response(true, "Product values deserialized.");

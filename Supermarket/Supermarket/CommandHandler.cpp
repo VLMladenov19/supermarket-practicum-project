@@ -511,7 +511,7 @@ void CommandHandler::listCategories(const Vector<String>& inputs)
 	size_t categoriesCount = categories.size();
 	if (!categoriesCount)
 	{
-		std::cout << "No products!\n";
+		std::cout << "No categories!\n";
 		return;
 	}
 	for (size_t i = 0; i < categoriesCount; i++)

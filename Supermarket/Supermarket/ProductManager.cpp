@@ -107,7 +107,7 @@ Response ProductManager::loadProducts()
 
         Vector<String> tokens = line.split(':');
         ProductType type = 
-            strToType(tokens[ProductConstants::LoadProduct::TYPE_INDEX]);
+            strToType(tokens[ProductConstants::DeserializeProduct::TYPE_INDEX]);
 
         Product* product = nullptr;
         switch (type)
@@ -142,18 +142,7 @@ Response ProductManager::loadNewProducts(String filename)
 
     if (!is.is_open())
     {
-        std::ofstream createFile(filename);
-        if (!createFile.is_open())
-        {
-            return Response(false, "Failed to create new_products file.");
-        }
-        createFile.close();
-
-        is.open(filename);
-        if (!is.is_open())
-        {
-            return Response(false, "Failed to open new_products file after creation.");
-        }
+        return Response(false, "Failed to open " + filename + ".");
     }
 
     String line;
@@ -166,6 +155,14 @@ Response ProductManager::loadNewProducts(String filename)
 
         if (tokens.size() == ProductConstants::NewProduct::INPUT_SIZE)
         {
+            Category* category =
+                this->getCategoryByName(
+                    tokens[ProductConstants::NewProduct::CATEGORY_NAME_INDEX]);
+            if (!category)
+            {
+                continue;
+            }
+
             Product* newProduct = nullptr;
             ProductType type = 
                 strToType(tokens[ProductConstants::NewProduct::TYPE_INDEX]);
@@ -175,8 +172,7 @@ Response ProductManager::loadNewProducts(String filename)
                 newProduct = new ProductByUnit(
                     this->getNextProductId(),
                     tokens[ProductConstants::NewProduct::NAME_INDEX],
-                    tokens[ProductConstants::NewProduct::CATEGORY_ID_INDEX]
-                    .toNumber(),
+                    category->getId(),
                     tokens[ProductConstants::NewProduct::PRICE_MINOR_INDEX]
                     .toNumber(),
                     tokens[ProductConstants::NewProduct::QUANTITY_INDEX]
@@ -187,12 +183,11 @@ Response ProductManager::loadNewProducts(String filename)
                 newProduct = new ProductByWeight(
                     this->getNextProductId(),
                     tokens[ProductConstants::NewProduct::NAME_INDEX],
-                    tokens[ProductConstants::NewProduct::CATEGORY_ID_INDEX]
-                    .toNumber(),
+                    category->getId(),
                     tokens[ProductConstants::NewProduct::PRICE_MINOR_INDEX]
                     .toNumber(),
                     tokens[ProductConstants::NewProduct::WEIGHT_INDEX]
-                    .toNumber() / 100.0
+                    .toNumber() / 1000.0
                 );
                 break;
             default:
@@ -207,10 +202,19 @@ Response ProductManager::loadNewProducts(String filename)
         }
         if (tokens.size() == ProductConstants::IncreaseProduct::INPUT_SIZE)
         {
-            size_t productId = 
-                tokens[ProductConstants::IncreaseProduct::ID_INDEX]
-                .toNumber();
-            Product* product = this->getProductById(productId);
+            if (tokens[ProductConstants::NewCategory::ACTION_INDEX] == "CATEGORY")
+            {
+                Category* category = new Category(
+                    this->getNextCategoryId(),
+                    tokens[ProductConstants::NewCategory::NAME_INDEX],
+                    tokens[ProductConstants::NewCategory::DESCRIPTION_INDEX]
+                );
+                Response res = this->addCategory(category);
+                continue;
+            }
+            String productName =
+                tokens[ProductConstants::IncreaseProduct::NAME_INDEX];
+            Product* product = this->getProductByName(productName);
 
             if (!product)
             {
@@ -240,7 +244,7 @@ Response ProductManager::loadNewProducts(String filename)
                     dynamic_cast<ProductByWeight*>(product);
                 productByWeight->increaseWeight(
                     tokens[ProductConstants::IncreaseProduct::WEIGHT_INDEX]
-                    .toNumber() / 100.0);
+                    .toNumber() / 1000.0);
             }
                 break;
             }
@@ -355,6 +359,19 @@ Product* ProductManager::getProductById(size_t id)
     for (size_t i = 0; i < productsCount; i++)
     {
         if (this->products_[i]->getId() == id)
+        {
+            return this->products_[i];
+        }
+    }
+    return nullptr;
+}
+
+Product* ProductManager::getProductByName(const String& name)
+{
+    size_t productsCount = this->products_.size();
+    for (size_t i = 0; i < productsCount; i++)
+    {
+        if (this->products_[i]->getName() == name)
         {
             return this->products_[i];
         }
