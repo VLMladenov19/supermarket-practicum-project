@@ -20,10 +20,6 @@ public:
 private:
 	String specialCode_;
 
-	static char randomDigit();
-	static char randomUpper();
-	static char randomLower();
-
 	String generateSpecialCode() const;
 	void saveSpecialCode() const;
 };

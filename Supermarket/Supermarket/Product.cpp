@@ -1,5 +1,6 @@
 #include "Product.h"
 #include "ProductConstants.h"
+#include "SingleCategoryGiftCard.h"
 
 Product::Product()
 	: id_(0), name_(), categoryId_(0), priceMinor_(0)
@@ -63,7 +64,7 @@ String Product::getPriceString() const
 	return result;
 }
 
-String typeToStr(ProductType type)
+String productTypeToStr(ProductType type)
 {
 	switch (type)
 	{
@@ -73,7 +74,7 @@ String typeToStr(ProductType type)
 	}
 }
 
-ProductType strToType(const String& str)
+ProductType strToProductType(const String& str)
 {
 	String lower = str.toLower();
 
@@ -87,7 +88,7 @@ ProductType strToType(const String& str)
 
 std::ofstream& Product::serialize(std::ofstream& os) const
 {
-	os << typeToStr(this->getType()) << ":"
+	os << productTypeToStr(this->getType()) << ":"
 		<< this->id_ << ":"
 		<< this->name_ << ":"
 		<< this->categoryId_ << ":"
@@ -114,7 +115,7 @@ String Product::toString() const
 	productInfo.push_back('<');
 	productInfo += String::toString(this->getId());
 	productInfo += "> ";
-	productInfo += typeToStr(this->getType()) + ": ";
+	productInfo += productTypeToStr(this->getType()) + ": ";
 	productInfo += name_ + " from category <";
 	productInfo += String::toString(categoryId_) + "> ";
 	productInfo += String::toString(priceMinor_ / 100.0);

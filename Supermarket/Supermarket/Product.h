@@ -13,8 +13,8 @@ enum class ProductType
 	ByWeight
 };
 
-String typeToStr(ProductType type);
-ProductType strToType(const String& str);
+String productTypeToStr(ProductType type);
+ProductType strToProductType(const String& str);
 
 class Product
 {

@@ -2,6 +2,11 @@
 #include "ProductByUnit.h"
 #include "ProductByWeight.h"
 #include "ProductConstants.h"
+#include "CategoryConstants.h"
+#include "GiftCardConstants.h"
+#include "SingleCategoryGiftCard.h"
+#include "MultipleCategoriesGiftCard.h"
+#include "AllProductsGiftCard.h"
 
 ProductManager::ProductManager()
 {
@@ -107,7 +112,7 @@ Response ProductManager::loadProducts()
 
         Vector<String> tokens = line.split(':');
         ProductType type = 
-            strToType(tokens[ProductConstants::DeserializeProduct::TYPE_INDEX]);
+            strToProductType(tokens[ProductConstants::DeserializeProduct::TYPE_INDEX]);
 
         Product* product = nullptr;
         switch (type)
@@ -136,7 +141,7 @@ Response ProductManager::loadProducts()
     return Response(true, "Products loaded successfully.");
 }
 
-Response ProductManager::loadNewProducts(String filename)
+Response ProductManager::loadNewProducts(const String& filename)
 {
     std::ifstream is(filename);
 
@@ -165,7 +170,7 @@ Response ProductManager::loadNewProducts(String filename)
 
             Product* newProduct = nullptr;
             ProductType type = 
-                strToType(tokens[ProductConstants::NewProduct::TYPE_INDEX]);
+                strToProductType(tokens[ProductConstants::NewProduct::TYPE_INDEX]);
             switch (type)
             {
             case ProductType::ByUnit:
@@ -202,12 +207,12 @@ Response ProductManager::loadNewProducts(String filename)
         }
         if (tokens.size() == ProductConstants::IncreaseProduct::INPUT_SIZE)
         {
-            if (tokens[ProductConstants::NewCategory::ACTION_INDEX] == "CATEGORY")
+            if (tokens[CategoryConstants::NewCategory::ACTION_INDEX] == "CATEGORY")
             {
                 Category* category = new Category(
                     this->getNextCategoryId(),
-                    tokens[ProductConstants::NewCategory::NAME_INDEX],
-                    tokens[ProductConstants::NewCategory::DESCRIPTION_INDEX]
+                    tokens[CategoryConstants::NewCategory::NAME_INDEX],
+                    tokens[CategoryConstants::NewCategory::DESCRIPTION_INDEX]
                 );
                 Response res = this->addCategory(category);
                 continue;
@@ -222,7 +227,7 @@ Response ProductManager::loadNewProducts(String filename)
             }
 
             ProductType type = 
-                strToType(tokens[ProductConstants::IncreaseProduct::TYPE_INDEX]);
+                strToProductType(tokens[ProductConstants::IncreaseProduct::TYPE_INDEX]);
             if (type != product->getType())
             {
                 continue;
@@ -258,11 +263,11 @@ Response ProductManager::loadNewProducts(String filename)
 
 Response ProductManager::loadCategories()
 {
-    std::ifstream is(ProductConstants::File::CATEGORIES_FILE);
+    std::ifstream is(CategoryConstants::File::CATEGORIES_FILE);
 
     if (!is.is_open())
     {
-        std::ofstream createFile(ProductConstants::File::CATEGORIES_FILE);
+        std::ofstream createFile(CategoryConstants::File::CATEGORIES_FILE);
         if (!createFile.is_open())
         {
             return Response(false, "Failed to create categories file.");
@@ -270,7 +275,7 @@ Response ProductManager::loadCategories()
         createFile.close();
 
         // Retry opening after creation
-        is.open(ProductConstants::File::CATEGORIES_FILE);
+        is.open(CategoryConstants::File::CATEGORIES_FILE);
         if (!is.is_open())
         {
             return Response(false, "Failed to open categories file after creation.");
@@ -297,6 +302,132 @@ Response ProductManager::loadCategories()
     }
 
     return Response(true, "Categories loaded successfully.");
+}
+
+Response ProductManager::loadGiftCards()
+{
+    std::ifstream is(GiftCardConstants::File::GIFT_CARDS_FILE);
+
+    if (!is.is_open())
+    {
+        std::ofstream createFile(GiftCardConstants::File::GIFT_CARDS_FILE);
+        if (!createFile.is_open())
+        {
+            return Response(false, "Failed to create gift cards file.");
+        }
+        createFile.close();
+
+        // Retry opening after creation
+        is.open(GiftCardConstants::File::GIFT_CARDS_FILE);
+        if (!is.is_open())
+        {
+            return Response(false, "Failed to open gift cards file after creation.");
+        }
+    }
+
+    this->giftCards_.clear();
+
+    size_t giftCardsCount = 0;
+    is >> giftCardsCount;
+    is.ignore();
+
+    for (size_t i = 0; i < giftCardsCount; i++)
+    {
+        GiftCard* giftCard = new GiftCard();
+
+        if (giftCard->deserialize(is).fail())
+        {
+            delete giftCard;
+            continue;
+        }
+
+        this->giftCards_.push_back(giftCard);
+    }
+
+    return Response(true, "Gift cards loaded successfully.");
+}
+
+Response ProductManager::loadNewGiftCards(const String& filename)
+{
+    std::ifstream is(filename);
+
+    if (!is.is_open())
+    {
+        return Response(false, "Failed to open " + filename + ".");
+    }
+
+    using namespace GiftCardConstants::NewGiftCard;
+    String line;
+    while (getline(is, line))
+    {
+        if (line.empty())
+            continue;
+
+        Vector<String> tokens = line.split(':');
+
+        if (tokens.size() < MIN_INPUT_SIZE)
+        {
+            continue;
+        }
+
+        GiftCard* giftCard = nullptr;
+        GiftCardType giftCardType = strToGiftCardType(tokens[TYPE_INDEX]);
+        switch (giftCardType)
+        {
+        case GiftCardType::All:
+            giftCard = new AllProductsGiftCard(
+                this->getNextGiftCardId(),
+                tokens[ALL_DISCOUNT_SIZE].toNumber()
+            );
+            break;
+        case GiftCardType::Single:
+        {
+            String name = tokens[SINGLE_CATEGORY_NAME_INDEX];
+            Category* category = this->getCategoryByName(name);
+
+            if (category)
+            {
+                giftCard = new SingleCategoryGiftCard(
+                    this->getNextGiftCardId(),
+                    tokens[SINGLE_DISCOUNT_INDEX].toNumber(),
+                    category->getId()
+                );
+            }
+            break;
+        }
+        case GiftCardType::Multiple:
+            Vector<size_t> categoryIds;
+            size_t categoryIdsCount = tokens[MULTIPLE_COUNT_INDEX].toNumber();
+            for (size_t i = 0; i < categoryIdsCount; i++)
+            {
+                String name = tokens[MULTIPLE_COUNT_INDEX + i + 1];
+                Category* category = this->getCategoryByName(name);
+
+                if (category)
+                {
+                    categoryIds.push_back(category->getId());
+                }
+            }
+            size_t discount = tokens[tokens.size() - 1]
+                .toNumber();
+            giftCard = new MultipleCategoriesGiftCard(
+                this->getNextGiftCardId(),
+                discount,
+                categoryIds
+            );
+            break;
+        }
+        if (!giftCard)
+        {
+            delete giftCard;
+            continue;
+        }
+        this->giftCards_.push_back(giftCard);
+    }
+    is.close();
+
+    this->uploadGiftCards();
+    return Response(true, "New gift cards loaded.");
 }
 
 Response ProductManager::uploadProducts()
@@ -328,7 +459,7 @@ Response ProductManager::uploadProducts()
 
 Response ProductManager::uploadCategories()
 {
-    std::ofstream os(ProductConstants::File::CATEGORIES_FILE, std::ios::binary);
+    std::ofstream os(CategoryConstants::File::CATEGORIES_FILE, std::ios::binary);
 
     if (!os.is_open())
     {
@@ -351,6 +482,33 @@ Response ProductManager::uploadCategories()
     os.close();
 
     return Response(true, "Users file updated successfully.");
+}
+
+Response ProductManager::uploadGiftCards()
+{
+    std::ofstream os(GiftCardConstants::File::GIFT_CARDS_FILE, std::ios::binary);
+
+    if (!os.is_open())
+    {
+        return Response(false, "Failed to open gift cards file.");
+    }
+
+    size_t giftCardsCount = this->giftCards_.size();
+    os << giftCardsCount << '\n';
+
+    for (size_t i = 0; i < giftCardsCount; i++)
+    {
+        GiftCard* giftCard = this->giftCards_[i];
+
+        if (giftCard)
+        {
+            giftCard->serialize(os);
+        }
+    }
+
+    os.close();
+
+    return Response(true, "Gift cards file updated successfully.");
 }
 
 Product* ProductManager::getProductById(size_t id)
@@ -432,11 +590,22 @@ size_t ProductManager::getNextProductId() const
 
 size_t ProductManager::getNextCategoryId() const
 {
-    size_t maxId = ProductConstants::BASE_ID - 1;
+    size_t maxId = CategoryConstants::BASE_ID - 1;
     size_t categoriesCount = this->categories_.size();
     for (size_t i = 0; i < categoriesCount; i++)
     {
         maxId = std::max(maxId, this->categories_[i]->getId());
+    }
+    return maxId + 1;
+}
+
+size_t ProductManager::getNextGiftCardId() const
+{
+    size_t maxId = GiftCardConstants::BASE_ID - 1;
+    size_t giftCardsCount = this->giftCards_.size();
+    for (size_t i = 0; i < giftCardsCount; i++)
+    {
+        maxId = std::max(maxId, this->giftCards_[i]->getId());
     }
     return maxId + 1;
 }
@@ -477,5 +646,14 @@ void ProductManager::freeCategories()
     for (size_t i = 0; i < categoriesCount; i++)
     {
         delete this->categories_[i];
+    }
+}
+
+void ProductManager::freeGiftCards()
+{
+    size_t giftCardsCount = this->giftCards_.size();
+    for (size_t i = 0; i < giftCardsCount; i++)
+    {
+        delete this->giftCards_[i];
     }
 }

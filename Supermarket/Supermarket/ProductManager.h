@@ -3,6 +3,8 @@
 #include "Response.h"
 #include "Vector.h"
 #include "Product.h"
+#include "Category.h"
+#include "GiftCard.h"
 
 class ProductManager
 {
@@ -18,11 +20,14 @@ public:
 
 	Response loadAll();
 	Response loadProducts();
-	Response loadNewProducts(String filename);
+	Response loadNewProducts(const String& filename);
 	Response loadCategories();
+	Response loadGiftCards();
+	Response loadNewGiftCards(const String& filename);
 
 	Response uploadProducts();
 	Response uploadCategories();
+	Response uploadGiftCards();
 
 	Product* getProductById(size_t id);
 	Product* getProductByName(const String& name);
@@ -32,6 +37,7 @@ public:
 
 	size_t getNextProductId() const;
 	size_t getNextCategoryId() const;
+	size_t getNextGiftCardId() const;
 
 	const Vector<Product*> getProducts() const;
 	const Vector<Category*> getCategories() const;
@@ -39,9 +45,11 @@ public:
 private:
 	Vector<Product*> products_;
 	Vector<Category*> categories_;
+	Vector<GiftCard*> giftCards_;
 
 	void copyFrom(const ProductManager& other);
 	void free();
 	void freeProducts();
 	void freeCategories();
+	void freeGiftCards();
 };

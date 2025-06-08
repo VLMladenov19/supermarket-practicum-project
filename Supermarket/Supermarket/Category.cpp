@@ -1,5 +1,5 @@
 #include "Category.h"
-#include "ProductConstants.h"
+#include "CategoryConstants.h"
 
 Category::Category()
 	: id_(0), name_(), description_()
@@ -46,7 +46,7 @@ std::ofstream& Category::serialize(std::ofstream& os) const
 
 std::ifstream& Category::deserialize(std::ifstream& is)
 {
-	using namespace ProductConstants::DeserializeCategory;
+	using namespace CategoryConstants::DeserializeCategory;
 	String line;
 	getline(is, line);
 

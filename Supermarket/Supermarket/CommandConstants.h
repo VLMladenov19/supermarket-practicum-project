@@ -2,85 +2,91 @@
 
 namespace CommandConstants
 {
-	constexpr size_t COMMAND_INDEX = 0;
+	const size_t COMMAND_INDEX = 0;
 
 	namespace Login
 	{
-		constexpr size_t INPUT_SIZE = 3;
-		constexpr size_t ID_INDEX = 1;
-		constexpr size_t PASSWORD_INDEX = 2;
+		const size_t INPUT_SIZE = 3;
+		const size_t ID_INDEX = 1;
+		const size_t PASSWORD_INDEX = 2;
 	}
 
 	namespace Logout
 	{
-		constexpr size_t INPUT_SIZE = 1;
+		const size_t INPUT_SIZE = 1;
 	}
 
 	namespace AddUser
 	{
-		constexpr size_t INPUT_SIZE = 7;
-		constexpr size_t ROLE_INDEX = 1;
-		constexpr size_t FIRST_NAME_INDEX = 2;
-		constexpr size_t LAST_NAME_INDEX = 3;
-		constexpr size_t PHONE_NUMBER_INDEX = 4;
-		constexpr size_t AGE_INDEX = 5;
-		constexpr size_t PASSWORD_INDEX = 6;
+		const size_t INPUT_SIZE = 7;
+		const size_t ROLE_INDEX = 1;
+		const size_t FIRST_NAME_INDEX = 2;
+		const size_t LAST_NAME_INDEX = 3;
+		const size_t PHONE_NUMBER_INDEX = 4;
+		const size_t AGE_INDEX = 5;
+		const size_t PASSWORD_INDEX = 6;
 	}
 
 	namespace RemoveCurrentUser
 	{
-		constexpr size_t INPUT_SIZE = 1;
+		const size_t INPUT_SIZE = 1;
 	}
 
 	namespace ListUserData
 	{
-		constexpr size_t INPUT_SIZE = 1;
+		const size_t INPUT_SIZE = 1;
 	}
 
 	namespace ListUsers
 	{
-		constexpr size_t INPUT_SIZE = 1;
+		const size_t INPUT_SIZE = 1;
 	}
 
 	namespace ManageCashier
 	{
-		constexpr size_t INPUT_SIZE = 3;
-		constexpr size_t CASHIER_ID_INDEX = 1;
-		constexpr size_t SPECIAL_CODE_INDEX = 2;
+		const size_t INPUT_SIZE = 3;
+		const size_t CASHIER_ID_INDEX = 1;
+		const size_t SPECIAL_CODE_INDEX = 2;
 	}
 
 	namespace AddCategory
 	{
-		constexpr size_t INPUT_MIN_SIZE = 2;
-		constexpr size_t NAME_INDEX = 1;
-		constexpr size_t DESCRIPTION_INDEX = 2;
+		const size_t INPUT_MIN_SIZE = 2;
+		const size_t NAME_INDEX = 1;
+		const size_t DESCRIPTION_INDEX = 2;
 	}
 
 	namespace DeleteCategory
 	{
-		constexpr size_t INPUT_SIZE = 2;
-		constexpr size_t CATEGORY_ID_INDEX = 1;
+		const size_t INPUT_SIZE = 2;
+		const size_t CATEGORY_ID_INDEX = 1;
 	}
 
 	namespace ListProducts
 	{
-		constexpr size_t INPUT_SIZE = 1;
+		const size_t INPUT_SIZE = 1;
 	}
 
 	namespace ListProductsByCategory
 	{
-		constexpr size_t INPUT_SIZE = 2;
-		constexpr size_t CATEGORY_ID_INDEX = 1;
+		const size_t INPUT_SIZE = 2;
+		const size_t CATEGORY_ID_INDEX = 1;
 	}
 
 	namespace ListCategories
 	{
-		constexpr size_t INPUT_SIZE = 1;
+		const size_t INPUT_SIZE = 1;
 	}
 
 	namespace LoadProducts
 	{
-		constexpr size_t INPUT_SIZE = 2;
-		constexpr size_t FILE_NAME_INDEX = 1;
+		const size_t INPUT_SIZE = 2;
+		const size_t FILE_NAME_INDEX = 1;
+	}
+
+	namespace LoadGiftCards
+	{
+		const size_t INPUT_SIZE = 2;
+		const size_t FILE_NAME_INDEX = 1;
 	}
 }

@@ -1,0 +1,3 @@
+All:1000
+Multiple:2:Fruits:Dairy:1500
+Single:Fruits:2500

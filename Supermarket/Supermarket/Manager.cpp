@@ -1,6 +1,7 @@
 #include "Manager.h"
 
 #include <fstream>
+#include "Random.h"
 
 Manager::Manager()
 	: User(), specialCode_()
@@ -49,32 +50,17 @@ std::ifstream& Manager::deserialize(std::ifstream& is)
 	return is;
 }
 
-char Manager::randomDigit()
-{
-	return rand() % ('9' - '0' + 1) + '0';
-}
-
-char Manager::randomUpper()
-{
-	return rand() % ('Z' - 'A' + 1) + 'A';
-}
-
-char Manager::randomLower()
-{
-	return rand() % ('z' - 'a' + 1) + 'a';
-}
-
 String Manager::generateSpecialCode() const
 {
 	String specialCode;
 
-	specialCode.push_back(Manager::randomDigit());
-	specialCode.push_back(Manager::randomUpper());
-	specialCode.push_back(Manager::randomUpper());
-	specialCode.push_back(Manager::randomDigit());
-	specialCode.push_back(Manager::randomDigit());
-	specialCode.push_back(Manager::randomDigit());
-	specialCode.push_back(Manager::randomLower());
+	specialCode.push_back(Random::randomDigit());
+	specialCode.push_back(Random::randomUpper());
+	specialCode.push_back(Random::randomUpper());
+	specialCode.push_back(Random::randomDigit());
+	specialCode.push_back(Random::randomDigit());
+	specialCode.push_back(Random::randomDigit());
+	specialCode.push_back(Random::randomLower());
 
 	return specialCode;
 }

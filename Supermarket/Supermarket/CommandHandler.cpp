@@ -93,6 +93,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return deleteCategory(inputs);
 	}
+	if (command == "load-gift-cards")
+	{
+		return loadNewGiftCards(inputs);
+	}
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
@@ -544,6 +548,34 @@ void CommandHandler::loadNewProducts(const Vector<String>& inputs)
 	}
 	std::cout << "Products loaded successfully.\n"; 
 	String logMsg = "Manager " + currentUser->getFirstName() + " loaded products from " + fileName;
+	Logger::log(logMsg);
+}
+
+void CommandHandler::loadNewGiftCards(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::LoadGiftCards;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+
+	String fileName = "files/" + inputs[FILE_NAME_INDEX];
+	Response res = this->productManager_.loadNewGiftCards(fileName);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Gift cards loaded successfully.\n";
+	String logMsg = "Manager " + currentUser->getFirstName() + 
+		" loaded gift cards from " + fileName;
 	Logger::log(logMsg);
 }
 
