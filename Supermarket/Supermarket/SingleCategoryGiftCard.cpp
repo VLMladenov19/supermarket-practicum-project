@@ -30,7 +30,8 @@ size_t SingleCategoryGiftCard::getCategoryId() const
 
 std::ofstream& SingleCategoryGiftCard::serialize(std::ofstream& os) const
 {
-	os << String::toString(this->id_) << ':'
+	os << String::toString((size_t)this->getType()) << ':'
+		<< String::toString(this->id_) << ':'
 		<< this->code_ << ':'
 		<< String::toString(this->categoryId_) << ':'
 		<< String::toString(this->discount_) << '\n';
@@ -50,6 +51,16 @@ std::ifstream& SingleCategoryGiftCard::deserialize(std::ifstream& is)
 	this->setDiscount(tokens[DISCOUNT_INDEX].toNumber());
 
 	return is;
+}
+
+String SingleCategoryGiftCard::toString() const
+{
+	String result = GiftCard::toString();
+
+	result += " for <" + String::toString(this->categoryId_);
+	result.push_back('>');
+
+	return result;
 }
 
 void SingleCategoryGiftCard::setCategoryId(size_t categoryId)

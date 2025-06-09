@@ -71,7 +71,12 @@ Response ProductManager::loadAll()
     {
         return res;
     }
-    return Response(true, "All products and categories loaded successfully.");
+    res = this->loadGiftCards();
+    if (!res.isSuccessful())
+    {
+        return res;
+    }
+    return Response(true, "All products, categories and gift cards loaded successfully.");
 }
 
 Response ProductManager::loadProducts()
@@ -333,9 +338,19 @@ Response ProductManager::loadGiftCards()
 
     for (size_t i = 0; i < giftCardsCount; i++)
     {
-        GiftCard* giftCard = new GiftCard();
+        GiftCard* giftCard = nullptr;
+        String giftCardTypeStr;
+        getline(is, giftCardTypeStr, ':');
+        GiftCardType giftCardType = (GiftCardType)giftCardTypeStr.toNumber();
 
-        if (giftCard->deserialize(is).fail())
+        switch (giftCardType)
+        {
+        case GiftCardType::All: giftCard = new AllProductsGiftCard(); break;
+        case GiftCardType::Single: giftCard = new SingleCategoryGiftCard(); break;
+        case GiftCardType::Multiple: giftCard = new MultipleCategoriesGiftCard(); break;
+        }
+
+        if (!giftCard || giftCard->deserialize(is).fail())
         {
             delete giftCard;
             continue;
@@ -618,6 +633,11 @@ const Vector<Product*> ProductManager::getProducts() const
 const Vector<Category*> ProductManager::getCategories() const
 {
     return this->categories_;
+}
+
+const Vector<GiftCard*> ProductManager::getGiftCards() const
+{
+    return this->giftCards_;
 }
 
 void ProductManager::copyFrom(const ProductManager& other)

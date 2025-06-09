@@ -41,6 +41,7 @@ public:
 
 	const Vector<Product*> getProducts() const;
 	const Vector<Category*> getCategories() const;
+	const Vector<GiftCard*> getGiftCards() const;
 
 private:
 	Vector<Product*> products_;

@@ -78,6 +78,11 @@ namespace CommandConstants
 		const size_t INPUT_SIZE = 1;
 	}
 
+	namespace ListGiftCards
+	{
+		const size_t INPUT_SIZE = 1;
+	}
+
 	namespace LoadProducts
 	{
 		const size_t INPUT_SIZE = 2;

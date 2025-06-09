@@ -17,6 +17,8 @@ public:
 	std::ofstream& serialize(std::ofstream& os) const override;
 	std::ifstream& deserialize(std::ifstream& is) override;
 
+	String toString() const override;
+
 private:
 	size_t categoryId_;
 

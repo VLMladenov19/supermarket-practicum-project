@@ -97,6 +97,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return loadNewGiftCards(inputs);
 	}
+	if (command == "list-gift-cards")
+	{
+		return listGiftCards(inputs);
+	}
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
@@ -521,6 +525,26 @@ void CommandHandler::listCategories(const Vector<String>& inputs)
 	for (size_t i = 0; i < categoriesCount; i++)
 	{
 		std::cout << categories[i]->toString() << '\n';
+	}
+}
+
+void CommandHandler::listGiftCards(const Vector<String>& inputs)
+{
+	if (inputs.size() != CommandConstants::ListCategories::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Vector<GiftCard*> giftCards = this->productManager_.getGiftCards();
+	size_t giftCardsCount = giftCards.size();
+	if (!giftCardsCount)
+	{
+		std::cout << "No gift cards!\n";
+		return;
+	}
+	for (size_t i = 0; i < giftCardsCount; i++)
+	{
+		std::cout << giftCards[i]->toString() << '\n';
 	}
 }
 

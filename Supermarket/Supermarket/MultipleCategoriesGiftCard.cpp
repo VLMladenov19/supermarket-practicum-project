@@ -31,7 +31,8 @@ const Vector<size_t> MultipleCategoriesGiftCard::getCategoryIds() const
 std::ofstream& MultipleCategoriesGiftCard::serialize(std::ofstream& os) const
 {
     size_t categoryIdsCount = this->categoryIds_.size();
-    os << String::toString(this->id_) << ':'
+    os << String::toString((size_t)this->getType()) << ':'
+        << String::toString(this->id_) << ':'
         << this->code_ << ':'
         << String::toString(categoryIdsCount) << ':';
     for (size_t i = 0; i < categoryIdsCount; i++)
@@ -64,6 +65,25 @@ std::ifstream& MultipleCategoriesGiftCard::deserialize(std::ifstream& is)
     this->setDiscount(tokens[tokens.size() - 1].toNumber());
 
     return is;
+}
+
+String MultipleCategoriesGiftCard::toString() const
+{
+    String result = GiftCard::toString();
+    
+    result += " for <";
+    size_t categoryIdsCount = this->categoryIds_.size();
+    for (size_t i = 0; i < categoryIdsCount; i++)
+    {
+        if (i != 0)
+        {
+            result += ", ";
+        }
+        result += String::toString(this->categoryIds_[i]);
+    }
+    result.push_back('>');
+
+    return result;
 }
 
 void MultipleCategoriesGiftCard::setCategoryIds(Vector<size_t> categoryIds)

@@ -40,7 +40,8 @@ size_t GiftCard::getDiscount() const
 
 std::ofstream& GiftCard::serialize(std::ofstream& os) const
 {
-	os << String::toString(this->id_) << ':'
+	os << String::toString((size_t)this->getType()) << ':'
+		<< String::toString(this->id_) << ':'
 		<< this->code_ << ':'
 		<< String::toString(this->discount_) << '\n';
 	return os;
@@ -58,6 +59,19 @@ std::ifstream& GiftCard::deserialize(std::ifstream& is)
 	this->setDiscount(tokens[DISCOUNT_INDEX].toNumber());
 
 	return is;
+}
+
+String GiftCard::toString() const
+{
+	String result;
+
+	result.push_back('<');
+	result += String::toString(this->id_) + "> ";
+	result += giftCardTypeToStr(this->getType()) + ": ";
+	result += this->code_ + ", Discount: ";
+	result += String::toString(this->discount_ / 100.0) + "%";
+
+	return result;
 }
 
 void GiftCard::setId(size_t id)
@@ -81,6 +95,15 @@ String GiftCard::generateCode() const
 
 	code.push_back(Random::randomDigit());
 	code.push_back(Random::randomUpper());
+
+	if (this->id_ < 10)
+	{
+		code.push_back('0');
+	}
+	if (this->id_ < 100)
+	{
+		code.push_back('0');
+	}
 	code += String::toString(this->id_);
 	code.push_back(Random::randomUpper());
 	code.push_back(Random::randomDigit());

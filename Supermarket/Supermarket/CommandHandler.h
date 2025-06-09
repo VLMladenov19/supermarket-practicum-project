@@ -31,6 +31,7 @@ public:
 	void listProducts(const Vector<String>& inputs);
 	void listProductsByCategory(const Vector<String>& inputs);
 	void listCategories(const Vector<String>& inputs);
+	void listGiftCards(const Vector<String>& inputs);
 	void loadNewProducts(const Vector<String>& inputs);
 	void loadNewGiftCards(const Vector<String>& inputs);
 
