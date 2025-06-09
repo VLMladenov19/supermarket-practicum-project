@@ -123,6 +123,14 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return listWarnedCashiers(inputs);
 	}
+	if (command == "sell")
+	{
+		return sell(inputs);
+	}
+	if (command == "list-transactions")
+	{
+		return listTransactions(inputs);
+	}
 	std::cout << "Invalid command.\n";
 }
 
@@ -525,7 +533,7 @@ void CommandHandler::addProduct(const Vector<String>& inputs)
 			this->productManager_.getNextProductId(),
 			productName,
 			category->getId(),
-			price * 100,
+			static_cast<size_t>(price * 100),
 			quantity
 		);
 		break;
@@ -544,7 +552,7 @@ void CommandHandler::addProduct(const Vector<String>& inputs)
 			this->productManager_.getNextProductId(),
 			productName,
 			category->getId(),
-			price * 100,
+			static_cast<size_t>(price * 100),
 			weight
 		);
 		break;
@@ -886,6 +894,154 @@ void CommandHandler::listFeed(const Vector<String>& inputs)
 	}
 
 	is.close();
+}
+
+void CommandHandler::sell(const Vector<String>& inputs)
+{
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Cashier)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != CommandConstants::Sell::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Transaction* transaction = new Transaction(
+		this->productManager_.getNextTransactionId(),
+		this->userManager_.getCurrentUser()->getId()
+	);
+	String action;
+	while (true)
+	{
+		const Vector<Product*>& products = this->productManager_.getProducts();
+		size_t productsCount = products.size();
+
+		std::cout << "\nProducts: \n";
+		for (size_t i = 0; i < productsCount; i++)
+		{
+			std::cout << products[i]->toString() << '\n';
+		}
+
+		std::cout << "\nTransaction ID: " << transaction->getId() << '\n';
+		std::cout << "Price: " 
+			<< String::toString(transaction->getRawTotalMinor() / 100.0) << '\n';
+
+		std::cout << "\nEnter product ID to sell. Enter END to end the transaction:\n";
+		std::cout << "> ";
+
+		getline(std::cin, action);
+		if (action == "END")
+		{
+			break;
+		}
+		size_t productId = action.toNumber();
+		Product* product = this->productManager_.getProductById(productId);
+		if (!product)
+		{
+			std::cout << "Invalid product ID.\n";
+			continue;
+		}
+
+		size_t quantity = 0;
+		if (product->getType() == ProductType::ByUnit)
+		{
+			std::cout << "Enter quantity: \n";
+			std::cout << "> ";
+		}
+		if (product->getType() == ProductType::ByWeight)
+		{
+			std::cout << "Enter weight in grams: \n";
+			std::cout << "> ";
+		}
+		getline(std::cin, action);
+		quantity = action.toNumber();
+
+		Response res(true);
+		if (product->getType() == ProductType::ByUnit)
+		{
+			ProductByUnit* productByUnit =
+				dynamic_cast<ProductByUnit*>(product);
+			res = productByUnit->decreaseQuantity(quantity);
+		}
+		if (product->getType() == ProductType::ByWeight)
+		{
+			ProductByWeight* productByUnit =
+				dynamic_cast<ProductByWeight*>(product);
+			res = productByUnit->decreaseWeight(quantity / 1000.0);
+		}
+		if (res.isSuccessful())
+		{
+			transaction->addProduct(product, quantity);
+		}
+
+		std::cout << "\n----------\n";
+	}
+	while(true)
+	{
+		std::cout << "Add voucher: (Y/N)? ";
+		getline(std::cin, action);
+		if (action.toLower() == "y")
+		{
+			std::cout << "Enter voucher: ";
+			getline(std::cin, action);
+			GiftCard* giftCard = this->productManager_.getGiftCardByCode(action);
+			if (!giftCard)
+			{
+				std::cout << "Invalid voucher.\n";
+				continue;
+			}
+
+			transaction->addGiftCard(giftCard);
+			std::cout << giftCard->getDiscount() / 100.0 << "% applied!\n";
+
+			break;
+		}
+		break;
+	}
+	std::cout << "\nTransaction complete!\n";
+	this->productManager_.createReceipt(transaction);
+
+	std::cout << "Receipt saved as: receipt_" << transaction->getIdString()
+		<< ".txt\n";
+	std::cout << "Total: " 
+		<< String::toString(transaction->getFinalPriceMinor() / 100.0) << " lv.\n";
+	Cashier* cashier = dynamic_cast<Cashier*>(this->userManager_.getCurrentUser());
+	if (cashier)
+	{
+		cashier->incrementTransactionsCount();
+	}
+
+	this->productManager_.uploadProducts();
+	this->productManager_.addTransaction(transaction);
+}
+
+void CommandHandler::listTransactions(const Vector<String>& inputs)
+{
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() == UserRole::None)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != CommandConstants::ListTransaction::INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Vector<Transaction*> transactions = this->productManager_.getTransaction();
+	size_t transactionsCount = transactions.size();
+	if (!transactionsCount)
+	{
+		std::cout << "No transactions!\n";
+		return;
+	}
+	for (size_t i = 0; i < transactionsCount; i++)
+	{
+		std::cout << transactions[i]->toString() << '\n';
+	}
 }
 
 void CommandHandler::addCashier(const Vector<String>& inputs)

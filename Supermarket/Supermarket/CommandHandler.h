@@ -41,6 +41,9 @@ public:
 	void loadNewGiftCards(const Vector<String>& inputs);
 
 	void listFeed(const Vector<String>& inputs);
+	
+	void sell(const Vector<String>& inputs);
+	void listTransactions(const Vector<String>& inputs);
 
 private:
 	void addCashier(const Vector<String>& inputs);

@@ -58,6 +58,9 @@
     <Filter Include="Header Files\GiftCards">
       <UniqueIdentifier>{6a26bbe1-736c-4b75-be54-fc1b25750a4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Transaction">
+      <UniqueIdentifier>{ef6a598e-82b8-46fa-a5a4-33a44100a2dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.h">
@@ -132,6 +135,12 @@
     <ClInclude Include="Warning.h">
       <Filter>Header Files\Users</Filter>
     </ClInclude>
+    <ClInclude Include="Transaction.h">
+      <Filter>Header Files\Transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="TransactionConstants.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="String.cpp">
@@ -190,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="Warning.cpp">
       <Filter>Source Files\Users</Filter>
+    </ClCompile>
+    <ClCompile Include="Transaction.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

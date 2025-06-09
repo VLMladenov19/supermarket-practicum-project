@@ -1,3 +1,5 @@
+#include <fstream>
+#include <ctime>
 #include "ProductManager.h"
 #include "ProductByUnit.h"
 #include "ProductByWeight.h"
@@ -7,6 +9,7 @@
 #include "SingleCategoryGiftCard.h"
 #include "MultipleCategoriesGiftCard.h"
 #include "AllProductsGiftCard.h"
+#include "TransactionConstants.h"
 
 ProductManager::ProductManager()
 {
@@ -90,7 +93,15 @@ Response ProductManager::loadAll()
     {
         return res;
     }
-    return Response(true, "All products, categories and gift cards loaded successfully.");
+    res = this->loadTransactions();
+    if (!res.isSuccessful())
+    {
+        return res;
+    }
+    return Response(
+        true, 
+        "All products, categories, gift cards and transactions loaded successfully."
+    );
 }
 
 Response ProductManager::loadProducts()
@@ -114,7 +125,7 @@ Response ProductManager::loadProducts()
         }
     }
 
-    this->products_.clear();
+    this->freeProducts();
 
     size_t productsCount = 0;
     is >> productsCount;
@@ -301,7 +312,7 @@ Response ProductManager::loadCategories()
         }
     }
 
-    this->categories_.clear();
+    this->freeCategories();
 
     size_t categoriesCount = 0;
     is >> categoriesCount;
@@ -344,7 +355,7 @@ Response ProductManager::loadGiftCards()
         }
     }
 
-    this->giftCards_.clear();
+    this->freeGiftCards();
 
     size_t giftCardsCount = 0;
     is >> giftCardsCount;
@@ -459,6 +470,39 @@ Response ProductManager::loadNewGiftCards(const String& filename)
     return Response(true, "New gift cards loaded.");
 }
 
+Response ProductManager::loadTransactions()
+{
+    std::ifstream is(TransactionConstants::File::TRANSACTIONS_FILE, std::ios::binary);
+    if (!is.is_open())
+    {
+        return Response(false, "Failed to open transactions file for reading");
+    }
+
+    this->freeTransactions();
+
+    size_t transactionCount = 0;
+    is.read((char*)&transactionCount, sizeof(transactionCount));
+    if (!is)
+    {
+        return Response(false, "Failed to read transaction count");
+    }
+
+    for (size_t i = 0; i < transactionCount; i++)
+    {
+        Transaction* t = new Transaction();
+        t->deserialize(is, this->products_, this->giftCards_);
+        if (!is)
+        {
+            delete t;
+            return Response(false, "Failed to read transaction data");
+        }
+        this->transactions_.push_back(t);
+    }
+
+    is.close();
+    return Response(true, "Transactions loaded successfully");
+}
+
 Response ProductManager::uploadProducts()
 {
     std::ofstream os(ProductConstants::File::PRODUCTS_FILE, std::ios::binary);
@@ -540,6 +584,76 @@ Response ProductManager::uploadGiftCards()
     return Response(true, "Gift cards file updated successfully.");
 }
 
+Response ProductManager::uploadTransactions()
+{
+    std::ofstream os(TransactionConstants::File::TRANSACTIONS_FILE, std::ios::binary);
+    if (!os.is_open())
+        return Response(false, "Failed to open transactions file for writing");
+
+    size_t transactionCount = this->transactions_.size();
+    os.write((const char*)&transactionCount, sizeof(transactionCount));
+
+    for (size_t i = 0; i < transactionCount; i++)
+    {
+        this->transactions_[i]->serialize(os);
+        if (!os)
+        {
+            return Response(false, "Error writing transaction data");
+        }
+    }
+
+    os.close();
+    return Response(true, "Transactions saved successfully");
+}
+
+Response ProductManager::addTransaction(Transaction* transaction)
+{
+    this->transactions_.push_back(transaction);
+    return this->uploadTransactions();
+}
+
+Response ProductManager::createReceipt(const Transaction* transaction)
+{
+    using namespace TransactionConstants::File;
+    String fileName = RECEIPT_BEGGINING_FILE;
+    fileName += transaction->getIdString();
+    fileName += RECEIPT_END_FILE;
+
+    std::ofstream os(fileName);
+    os << "RECEIPT\n";
+    os << "TRANSACTION_ID: " << transaction->getIdString() << '\n';
+    os << "CASHIER_ID: " << transaction->getCashierId() << '\n';
+
+    os << transaction->timestampToString() << '\n';
+    os << "------------------------------\n";
+
+    Vector<Product*> products = transaction->getProducts();
+    Vector<size_t> quantities = transaction->getQuantities();
+    size_t productsCount = products.size();
+    for (size_t i = 0; i < productsCount; i++)
+    {
+        os << products[i]->getName() << '\n';
+        if (products[i]->getType() == ProductType::ByUnit)
+        {
+            os << quantities[i]; 
+        }
+        if (products[i]->getType() == ProductType::ByWeight)
+        {
+            os << quantities[i] / 1000.0; 
+        }
+        os << "*" << products[i]->getPriceString() << " - "
+            << quantities[i] * products[i]->getPriceMinor() / 100.0 << '\n';
+        os << "###\n";
+    }
+
+    os << "TOTAL: " 
+        << String::toString(transaction->getFinalPriceMinor() / 100.0) << '\n';
+
+    os.close();
+
+    return Response(true, "Receipt saved successfully.");
+}
+
 Product* ProductManager::getProductById(size_t id)
 {
     size_t productsCount = this->products_.size();
@@ -606,6 +720,32 @@ Vector<Product*> ProductManager::getProductsByCategoryId(size_t categoryId)
     return products;
 }
 
+GiftCard* ProductManager::getGiftCardById(size_t id)
+{
+    size_t giftCardsCount = this->giftCards_.size();
+    for (size_t i = 0; i < giftCardsCount; i++)
+    {
+        if (this->giftCards_[i]->getId() == id)
+        {
+            return this->giftCards_[i];
+        }
+    }
+    return nullptr;
+}
+
+GiftCard* ProductManager::getGiftCardByCode(const String& code)
+{
+    size_t giftCardsCount = this->giftCards_.size();
+    for (size_t i = 0; i < giftCardsCount; i++)
+    {
+        if (this->giftCards_[i]->getCode() == code)
+        {
+            return this->giftCards_[i];
+        }
+    }
+    return nullptr;
+}
+
 size_t ProductManager::getNextProductId() const
 {
     size_t maxId = ProductConstants::BASE_ID - 1;
@@ -639,6 +779,17 @@ size_t ProductManager::getNextGiftCardId() const
     return maxId + 1;
 }
 
+size_t ProductManager::getNextTransactionId() const
+{
+    size_t maxId = TransactionConstants::BASE_ID - 1;
+    size_t transactionsCount = this->transactions_.size();
+    for (size_t i = 0; i < transactionsCount; i++)
+    {
+        maxId = std::max(maxId, this->transactions_[i]->getId());
+    }
+    return maxId + 1;
+}
+
 const Vector<Product*> ProductManager::getProducts() const
 {
     return this->products_;
@@ -654,6 +805,11 @@ const Vector<GiftCard*> ProductManager::getGiftCards() const
     return this->giftCards_;
 }
 
+const Vector<Transaction*> ProductManager::getTransaction() const
+{
+    return this->transactions_;
+}
+
 void ProductManager::copyFrom(const ProductManager& other)
 {
     this->products_ = other.products_;
@@ -663,6 +819,8 @@ void ProductManager::free()
 {
     this->freeProducts();
     this->freeCategories();
+    this->freeGiftCards();
+    this->freeTransactions();
 }
 
 void ProductManager::freeProducts()
@@ -672,6 +830,7 @@ void ProductManager::freeProducts()
     {
         delete this->products_[i];
     }
+    this->products_.clear();
 }
 
 void ProductManager::freeCategories()
@@ -681,6 +840,7 @@ void ProductManager::freeCategories()
     {
         delete this->categories_[i];
     }
+    this->categories_.clear();
 }
 
 void ProductManager::freeGiftCards()
@@ -690,4 +850,15 @@ void ProductManager::freeGiftCards()
     {
         delete this->giftCards_[i];
     }
+    this->giftCards_.clear();
+}
+
+void ProductManager::freeTransactions()
+{
+    size_t transactionsCount = this->transactions_.size();
+    for (size_t i = 0; i < transactionsCount; i++)
+    {
+        delete this->transactions_[i];
+    }
+    this->transactions_.clear();
 }

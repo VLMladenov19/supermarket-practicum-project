@@ -68,6 +68,10 @@ size_t Cashier::getTotalWarningPoints() const
 void Cashier::incrementTransactionsCount()
 {
 	this->transactionsCount_++;
+	if (!(transactionsCount_ % 3))
+	{
+		this->warnings_.remove(0);
+	}
 }
 
 std::ofstream& Cashier::serialize(std::ofstream& os) const
@@ -113,7 +117,8 @@ String Cashier::toString() const
 	String userInfo = User::toString();
 
 	userInfo += ", Total Warnings: ";
-	userInfo += String::toString(this->getTotalWarningPoints());
+	userInfo += String::toString(this->warnings_.size()) + " (";
+	userInfo += String::toString(this->getTotalWarningPoints()) + " points)";
 
 	return userInfo;
 }

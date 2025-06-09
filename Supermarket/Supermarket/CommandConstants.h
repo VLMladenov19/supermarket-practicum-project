@@ -125,4 +125,14 @@ namespace CommandConstants
 		const size_t INPUT_SIZE = 2;
 		const size_t FILE_NAME_INDEX = 1;
 	}
+
+	namespace Sell
+	{
+		const size_t INPUT_SIZE = 1;
+	}
+
+	namespace ListTransaction
+	{
+		const size_t INPUT_SIZE = 1;
+	}
 }

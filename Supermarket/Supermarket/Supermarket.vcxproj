@@ -39,6 +39,8 @@
     <ClInclude Include="Response.h" />
     <ClInclude Include="SingleCategoryGiftCard.h" />
     <ClInclude Include="String.h" />
+    <ClInclude Include="Transaction.h" />
+    <ClInclude Include="TransactionConstants.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="UserManager.h" />
     <ClInclude Include="Vector.h" />
@@ -61,6 +63,7 @@
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="SingleCategoryGiftCard.cpp" />
     <ClCompile Include="String.cpp" />
+    <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="UserManager.cpp" />
     <ClCompile Include="Warning.cpp" />

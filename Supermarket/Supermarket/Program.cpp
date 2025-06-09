@@ -5,7 +5,7 @@
 Program::Program() 
     : commandHandler_(this->userManager_, this->productManager_)
 {
-    srand(time(NULL));
+    srand(static_cast<unsigned int>(time(NULL)));
 }
 
 void Program::run()

@@ -90,8 +90,8 @@ String ProductByWeight::toString() const
 {
 	String productInfo = Product::toString();
 
-	size_t weightInGrams = this->weight_ * 1000;
-	productInfo += ", Weight: " + String::toString(weightInGrams / 1000);
+	size_t weightInGrams = static_cast<size_t>(this->weight_ * 1000);
+	productInfo += "/kg, Weight: " + String::toString(weightInGrams / 1000);
 	productInfo.push_back('.');
 	if (weightInGrams % 1000 < 10)
 	{
