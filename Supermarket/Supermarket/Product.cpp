@@ -117,7 +117,7 @@ String Product::toString() const
 	productInfo += "> ";
 	productInfo += productTypeToStr(this->getType()) + ": ";
 	productInfo += name_ + " from category <";
-	productInfo += String::toString(categoryId_) + "> ";
+	productInfo += String::toString(categoryId_) + ">, Price: ";
 	productInfo += String::toString(priceMinor_ / 100.0);
 
 	return productInfo;

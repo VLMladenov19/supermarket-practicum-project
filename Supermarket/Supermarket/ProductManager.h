@@ -15,6 +15,7 @@ public:
 	~ProductManager();
 
 	Response addProduct(Product* product);
+	Response removeProduct(size_t id);
 	Response addCategory(Category* category);
 	Response removeCategory(size_t id);
 

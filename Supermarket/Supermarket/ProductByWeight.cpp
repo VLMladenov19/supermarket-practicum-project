@@ -91,7 +91,7 @@ String ProductByWeight::toString() const
 	String productInfo = Product::toString();
 
 	size_t weightInGrams = this->weight_ * 1000;
-	productInfo += " " + String::toString(weightInGrams / 1000);
+	productInfo += ", Weight: " + String::toString(weightInGrams / 1000);
 	productInfo.push_back('.');
 	if (weightInGrams % 1000 < 10)
 	{

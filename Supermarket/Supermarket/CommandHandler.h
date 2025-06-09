@@ -25,6 +25,8 @@ public:
 	void declinePending(const Vector<String>& inputs);
 	void promoteCashier(const Vector<String>& inputs);
 
+	void addProduct(const Vector<String>& inputs);
+	void deleteProduct(const Vector<String>& inputs);
 	void addCategory(const Vector<String>& inputs);
 	void deleteCategory(const Vector<String>& inputs);
 

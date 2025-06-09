@@ -89,7 +89,7 @@ String ProductByUnit::toString() const
 {
 	String productInfo = Product::toString();
 
-	productInfo += " " + String::toString(this->quantity_);
+	productInfo += ", Quantity: " + String::toString(this->quantity_);
 
 	return productInfo;
 }

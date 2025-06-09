@@ -39,6 +39,20 @@ Response ProductManager::addProduct(Product* product)
     return this->uploadProducts();
 }
 
+Response ProductManager::removeProduct(size_t id)
+{
+    size_t productsCount = this->products_.size();
+    for (size_t i = 0; i < productsCount; i++)
+    {
+        if (this->products_[i]->getId() == id)
+        {
+            this->products_.remove(i);
+            return this->uploadProducts();
+        }
+    }
+    return Response(false, "Invalid id.");
+}
+
 Response ProductManager::addCategory(Category* category)
 {
     this->categories_.push_back(category);

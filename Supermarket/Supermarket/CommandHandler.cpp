@@ -3,6 +3,8 @@
 #include "Cashier.h"
 #include "Manager.h"
 #include "Logger.h"
+#include "ProductByUnit.h"
+#include "ProductByWeight.h"
 
 CommandHandler::CommandHandler(UserManager& userManager,
 	ProductManager& productManager)
@@ -85,6 +87,14 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return listFeed(inputs);
 	}
+	if (command == "add-product")
+	{
+		return addProduct(inputs);
+	}
+	if (command == "delete-product")
+	{
+		return deleteProduct(inputs);
+	}
 	if (command == "add-category")
 	{
 		return addCategory(inputs);
@@ -101,6 +111,7 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return listGiftCards(inputs);
 	}
+	std::cout << "Invalid command.\n";
 }
 
 void CommandHandler::login(const Vector<String>& inputs)
@@ -379,6 +390,132 @@ void CommandHandler::promoteCashier(const Vector<String>& inputs)
 	Logger::log(logMessage);
 }
 
+void CommandHandler::addProduct(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::AddProduct;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	ProductType productType = strToProductType(inputs[PRODUCT_TYPE]);
+	if (productType == ProductType::None)
+	{
+		std::cout << "Invalid product type.\n";
+		return;
+	}
+
+	std::cout << "\tEnter product name: ";
+	String productName;
+	getline(std::cin, productName);
+
+	std::cout << "\tEnter product category: ";
+	String categoryName;
+	getline(std::cin, categoryName);
+	Category* category = this->productManager_.getCategoryByName(categoryName);
+	if (!category)
+	{
+		std::cout << "Invalid category name.\n";
+		return;
+	}
+
+	Product* product = nullptr;
+	switch (productType)
+	{
+	case ProductType::ByUnit:
+	{
+		std::cout << "\tEnter price per unit: ";
+		double price;
+		std::cin >> price;
+
+		std::cout << "\tEnter quantity (unit): ";
+		size_t quantity;
+		std::cin >> quantity;
+		std::cin.ignore();
+		product = new ProductByUnit(
+			this->productManager_.getNextProductId(),
+			productName,
+			category->getId(),
+			price * 100,
+			quantity
+		);
+		break;
+	}
+	case ProductType::ByWeight:
+	{
+		std::cout << "\tEnter price per kg: ";
+		double price;
+		std::cin >> price;
+
+		std::cout << "\tEnter quantity (kg): ";
+		double weight;
+		std::cin >> weight;
+		std::cin.ignore();
+		product = new ProductByWeight(
+			this->productManager_.getNextProductId(),
+			productName,
+			category->getId(),
+			price * 100,
+			weight
+		);
+		break;
+	}
+	}
+	if (!product)
+	{
+		delete product;
+		return;
+	}
+
+	Response res = this->productManager_.addProduct(product);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Product \"" << productName << "\" added successfully "
+		<< "under category \"" << categoryName << "\"\n";
+
+	String logMessage = currentUser->toString() + " added new product: \"" +
+		productName + "\" under category: \"" + categoryName + "\".";
+	Logger::log(logMessage);
+}
+
+void CommandHandler::deleteProduct(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::DeleteProduct;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+
+	size_t productId = inputs[PRODUCT_ID_INDEX].toNumber();
+	Response res = this->productManager_.removeProduct(productId);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Product deleted successfully.\n";
+
+	String logMessage = currentUser->toString() + " deleted product with ID: " +
+		String::toString(productId) + ".";
+	Logger::log(logMessage);
+}
+
 void CommandHandler::addCategory(const Vector<String>& inputs)
 {
 	using namespace CommandConstants::AddCategory;
@@ -405,8 +542,6 @@ void CommandHandler::addCategory(const Vector<String>& inputs)
 		}
 		categoryDesc += inputs[i];
 	}
-
-
 	Category* category = new Category(
 		this->productManager_.getNextCategoryId(),
 		categoryName, 
@@ -434,7 +569,7 @@ void CommandHandler::deleteCategory(const Vector<String>& inputs)
 		std::cout << "Access denied.\n";
 		return;
 	}
-	if (inputs.size() < INPUT_SIZE)
+	if (inputs.size() != INPUT_SIZE)
 	{
 		std::cout << "Invalid inputs.\n";
 		return;

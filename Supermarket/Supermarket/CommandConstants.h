@@ -49,6 +49,18 @@ namespace CommandConstants
 		const size_t SPECIAL_CODE_INDEX = 2;
 	}
 
+	namespace AddProduct
+	{
+		const size_t INPUT_SIZE = 2;
+		const size_t PRODUCT_TYPE = 1;
+	}
+
+	namespace DeleteProduct
+	{
+		const size_t INPUT_SIZE = 2;
+		const size_t PRODUCT_ID_INDEX = 1;
+	}
+
 	namespace AddCategory
 	{
 		const size_t INPUT_MIN_SIZE = 2;
