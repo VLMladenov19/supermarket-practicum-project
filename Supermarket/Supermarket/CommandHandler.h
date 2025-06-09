@@ -30,6 +30,7 @@ public:
 	void addProduct(const Vector<String>& inputs);
 	void deleteProduct(const Vector<String>& inputs);
 	void addCategory(const Vector<String>& inputs);
+	void editCategory(const Vector<String>& inputs);
 	void deleteCategory(const Vector<String>& inputs);
 
 	void listProducts(const Vector<String>& inputs);

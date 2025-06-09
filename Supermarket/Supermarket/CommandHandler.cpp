@@ -99,6 +99,10 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return addCategory(inputs);
 	}
+	if (command == "edit-category")
+	{
+		return editCategory(inputs);
+	}
 	if (command == "delete-category")
 	{
 		return deleteCategory(inputs);
@@ -636,6 +640,57 @@ void CommandHandler::addCategory(const Vector<String>& inputs)
 	
 	String logMessage = currentUser->toString() + " added new category: \"" +
 		categoryName + "\" with description: \"" + categoryDesc + "\".";
+	Logger::log(logMessage);
+}
+
+void CommandHandler::editCategory(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::EditCategory;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	size_t inputSize = inputs.size();
+	if (inputSize < INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+
+	size_t categoryId = inputs[ID_INDEX].toNumber();
+
+	std::cout << "Enter category name: ";
+	String name;
+	getline(std::cin, name);
+
+	std::cout << "Enter category description: ";
+	String desc;
+	getline(std::cin, desc);
+
+	Category* category = new Category(
+		categoryId,
+		name,
+		desc
+	);
+	Response res = this->productManager_.removeCategory(categoryId);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	res = this->productManager_.addCategory(category);
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Category with ID: " << categoryId
+		<< " edited successfully.\n";
+
+	String logMessage = currentUser->toString() + " edited category with ID: " +
+		String::toString(categoryId) + ".";
 	Logger::log(logMessage);
 }
 

@@ -81,6 +81,12 @@ namespace CommandConstants
 		const size_t DESCRIPTION_INDEX = 2;
 	}
 
+	namespace EditCategory
+	{
+		const size_t INPUT_SIZE = 2;
+		const size_t ID_INDEX = 1;
+	}
+
 	namespace DeleteCategory
 	{
 		const size_t INPUT_SIZE = 2;
