@@ -211,6 +211,41 @@ Response UserManager::fireCashier(size_t id, const String& specialCode)
     return this->removeUser(id);
 }
 
+Response UserManager::warnCashier(size_t id, size_t points)
+{
+    if (this->currentUser_->getRole() != UserRole::Manager)
+    {
+        return Response(false, "Invalid access.");
+    }
+
+    size_t usersCount = this->users_.size();
+    for (size_t i = 0; i < usersCount; i++)
+    {
+        if (this->users_[i]->getId() == id)
+        {
+            if (this->users_[i]->getRole() == UserRole::Manager)
+            {
+                return Response(false, "Can not warn manager.");
+            }
+
+            Cashier* cashier = dynamic_cast<Cashier*>(this->users_[i]);
+            if (!cashier)
+            {
+                return Response(false, "User is not a Cashier.");
+            }
+
+            Warning warning(
+                this->currentUser_->getId(),
+                points
+            );
+            cashier->addWarning(warning);
+            return this->uploadUsers();
+        }
+    }
+
+    return Response(false, "Invalid id.");
+}
+
 Response UserManager::loadAll()
 {
     Response res = this->loadUsers();

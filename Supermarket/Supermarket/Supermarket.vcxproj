@@ -42,6 +42,7 @@
     <ClInclude Include="User.h" />
     <ClInclude Include="UserManager.h" />
     <ClInclude Include="Vector.h" />
+    <ClInclude Include="Warning.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AllProductsGiftCard.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="String.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="UserManager.cpp" />
+    <ClCompile Include="Warning.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

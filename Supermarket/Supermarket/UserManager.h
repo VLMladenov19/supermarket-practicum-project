@@ -21,6 +21,7 @@ public:
 	Response declineCashier(size_t id, const String& specialCode);
 	Response promoteCashier(size_t id, const String& specialCode);
 	Response fireCashier(size_t id, const String& specialCode);
+	Response warnCashier(size_t id, size_t points);
 
 	Response loadAll();
 	Response loadUsers();

@@ -24,6 +24,8 @@ public:
 	void approvePending(const Vector<String>& inputs);
 	void declinePending(const Vector<String>& inputs);
 	void promoteCashier(const Vector<String>& inputs);
+	void warnCashier(const Vector<String>& inputs);
+	void listWarnedCashiers(const Vector<String>& inputs);
 
 	void addProduct(const Vector<String>& inputs);
 	void deleteProduct(const Vector<String>& inputs);

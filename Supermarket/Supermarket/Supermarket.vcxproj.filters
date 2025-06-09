@@ -129,6 +129,9 @@
     <ClInclude Include="GiftCardConstants.h">
       <Filter>Header Files\Constants</Filter>
     </ClInclude>
+    <ClInclude Include="Warning.h">
+      <Filter>Header Files\Users</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="String.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="SingleCategoryGiftCard.cpp">
       <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="Warning.cpp">
+      <Filter>Source Files\Users</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -111,6 +111,14 @@ void CommandHandler::dispatch(const Vector<String>& inputs)
 	{
 		return listGiftCards(inputs);
 	}
+	if (command == "warn-cashier")
+	{
+		return warnCashier(inputs);
+	}
+	if (command == "list-warned-cashiers")
+	{
+		return listWarnedCashiers(inputs);
+	}
 	std::cout << "Invalid command.\n";
 }
 
@@ -388,6 +396,77 @@ void CommandHandler::promoteCashier(const Vector<String>& inputs)
 	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
 		") promoted cashier with ID: " + String::toString(cashierId);
 	Logger::log(logMessage);
+}
+
+void CommandHandler::warnCashier(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::WarnCashier;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	Response res = this->userManager_.warnCashier(
+		inputs[CASHIER_ID_INDEX].toNumber(),
+		inputs[POINTS_INDEX].toNumber());
+	if (!res.isSuccessful())
+	{
+		std::cout << res.getMessage() << '\n';
+		return;
+	}
+	std::cout << "Cashier warned successfully!\n";
+
+	size_t cashierId = inputs[CASHIER_ID_INDEX].toNumber();
+	String logMessage = "Manager (ID: " + String::toString(currentUser->getId()) +
+		") warned cashier with ID: " + String::toString(cashierId);
+	Logger::log(logMessage);
+}
+
+void CommandHandler::listWarnedCashiers(const Vector<String>& inputs)
+{
+	using namespace CommandConstants::ListWarnedUsers;
+	User* currentUser = this->userManager_.getCurrentUser();
+	if (!currentUser || currentUser->getRole() != UserRole::Manager)
+	{
+		std::cout << "Access denied.\n";
+		return;
+	}
+	if (inputs.size() != INPUT_SIZE)
+	{
+		std::cout << "Invalid inputs.\n";
+		return;
+	}
+	size_t minPoints = inputs[POINTS_INDEX].toNumber();
+	Vector<User*> users = this->userManager_.getUsers();
+	size_t usersCount = users.size();
+	bool hasWarnedUser = false;
+	for (size_t i = 0; i < usersCount; i++)
+	{
+		if (users[i]->getRole() == UserRole::Cashier)
+		{
+			Cashier* cashier = dynamic_cast<Cashier*>(users[i]);
+			if (!cashier)
+			{
+				continue;
+			}
+			if (minPoints <= cashier->getTotalWarningPoints())
+			{
+				std::cout << users[i]->toString() << '\n';
+				hasWarnedUser = true;
+			}
+		}
+	}
+	if (!hasWarnedUser)
+	{
+		std::cout << "No warned users!\n";
+		return;
+	}
 }
 
 void CommandHandler::addProduct(const Vector<String>& inputs)

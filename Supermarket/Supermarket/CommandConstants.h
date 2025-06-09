@@ -49,6 +49,19 @@ namespace CommandConstants
 		const size_t SPECIAL_CODE_INDEX = 2;
 	}
 
+	namespace WarnCashier
+	{
+		const size_t INPUT_SIZE = 3;
+		const size_t CASHIER_ID_INDEX = 1;
+		const size_t POINTS_INDEX = 2;
+	}
+
+	namespace ListWarnedUsers
+	{
+		const size_t INPUT_SIZE = 2;
+		const size_t POINTS_INDEX = 1;
+	}
+
 	namespace AddProduct
 	{
 		const size_t INPUT_SIZE = 2;
