@@ -61,147 +61,150 @@
     <Filter Include="Header Files\Transaction">
       <UniqueIdentifier>{ef6a598e-82b8-46fa-a5a4-33a44100a2dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Transaction">
+      <UniqueIdentifier>{d9493e5b-efa8-4186-bc58-8b104dc5028d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="User.h">
-      <Filter>Header Files\Users</Filter>
-    </ClInclude>
-    <ClInclude Include="Manager.h">
-      <Filter>Header Files\Users</Filter>
-    </ClInclude>
-    <ClInclude Include="Cashier.h">
-      <Filter>Header Files\Users</Filter>
-    </ClInclude>
-    <ClInclude Include="Product.h">
-      <Filter>Header Files\Products</Filter>
-    </ClInclude>
-    <ClInclude Include="String.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="ProductByUnit.h">
-      <Filter>Header Files\Products</Filter>
-    </ClInclude>
-    <ClInclude Include="Response.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="ProductByWeight.h">
-      <Filter>Header Files\Products</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandHandler.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Program.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Random.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="GiftCard.h">
-      <Filter>Header Files\GiftCards</Filter>
-    </ClInclude>
-    <ClInclude Include="Category.h">
+    <ClInclude Include="Category\Category.h">
       <Filter>Header Files\Category</Filter>
     </ClInclude>
-    <ClInclude Include="ProductManager.h">
+    <ClInclude Include="Constants\CategoryConstants.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\CommandConstants.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\GiftCardConstants.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\ProductConstants.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\TransactionConstants.h">
+      <Filter>Header Files\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CommandHandler.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Program.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GiftCards\AllProductsGiftCard.h">
+      <Filter>Header Files\GiftCards</Filter>
+    </ClInclude>
+    <ClInclude Include="GiftCards\GiftCard.h">
+      <Filter>Header Files\GiftCards</Filter>
+    </ClInclude>
+    <ClInclude Include="GiftCards\MultipleCategoriesGiftCard.h">
+      <Filter>Header Files\GiftCards</Filter>
+    </ClInclude>
+    <ClInclude Include="GiftCards\SingleCategoryGiftCard.h">
+      <Filter>Header Files\GiftCards</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ProductManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="UserManager.h">
+    <ClInclude Include="Managers\UserManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="CommandConstants.h">
-      <Filter>Header Files\Constants</Filter>
+    <ClInclude Include="Products\Product.h">
+      <Filter>Header Files\Products</Filter>
     </ClInclude>
-    <ClInclude Include="SingleCategoryGiftCard.h">
-      <Filter>Header Files\GiftCards</Filter>
+    <ClInclude Include="Products\ProductByUnit.h">
+      <Filter>Header Files\Products</Filter>
     </ClInclude>
-    <ClInclude Include="MultipleCategoriesGiftCard.h">
-      <Filter>Header Files\GiftCards</Filter>
+    <ClInclude Include="Products\ProductByWeight.h">
+      <Filter>Header Files\Products</Filter>
     </ClInclude>
-    <ClInclude Include="AllProductsGiftCard.h">
-      <Filter>Header Files\GiftCards</Filter>
-    </ClInclude>
-    <ClInclude Include="CategoryConstants.h">
-      <Filter>Header Files\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="GiftCardConstants.h">
-      <Filter>Header Files\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="Warning.h">
-      <Filter>Header Files\Users</Filter>
-    </ClInclude>
-    <ClInclude Include="Transaction.h">
+    <ClInclude Include="Transaction\Transaction.h">
       <Filter>Header Files\Transaction</Filter>
     </ClInclude>
-    <ClInclude Include="TransactionConstants.h">
-      <Filter>Header Files\Constants</Filter>
+    <ClInclude Include="Users\Cashier.h">
+      <Filter>Header Files\Users</Filter>
+    </ClInclude>
+    <ClInclude Include="Users\Manager.h">
+      <Filter>Header Files\Users</Filter>
+    </ClInclude>
+    <ClInclude Include="Users\User.h">
+      <Filter>Header Files\Users</Filter>
+    </ClInclude>
+    <ClInclude Include="Users\Warning.h">
+      <Filter>Header Files\Users</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Random.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Response.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\String.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Vector.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Logger.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="String.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Manager.cpp">
-      <Filter>Source Files\Users</Filter>
-    </ClCompile>
-    <ClCompile Include="User.cpp">
-      <Filter>Source Files\Users</Filter>
-    </ClCompile>
-    <ClCompile Include="Cashier.cpp">
-      <Filter>Source Files\Users</Filter>
-    </ClCompile>
-    <ClCompile Include="Product.cpp">
-      <Filter>Source Files\Products</Filter>
-    </ClCompile>
-    <ClCompile Include="ProductByUnit.cpp">
-      <Filter>Source Files\Products</Filter>
-    </ClCompile>
-    <ClCompile Include="ProductByWeight.cpp">
-      <Filter>Source Files\Products</Filter>
-    </ClCompile>
-    <ClCompile Include="Program.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandler.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="ProductConstants.h">
-      <Filter>Header Files\Constants</Filter>
-    </ClCompile>
-    <ClCompile Include="Category.cpp">
+    <ClCompile Include="Category\Category.cpp">
       <Filter>Source Files\Category</Filter>
     </ClCompile>
-    <ClCompile Include="ProductManager.cpp">
+    <ClCompile Include="Core\CommandHandler.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Main.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Program.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GiftCards\AllProductsGiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="GiftCards\GiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="GiftCards\MultipleCategoriesGiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="GiftCards\SingleCategoryGiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ProductManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="UserManager.cpp">
+    <ClCompile Include="Managers\UserManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="AllProductsGiftCard.cpp">
-      <Filter>Source Files\GiftCards</Filter>
+    <ClCompile Include="Products\Product.cpp">
+      <Filter>Source Files\Products</Filter>
     </ClCompile>
-    <ClCompile Include="GiftCard.cpp">
-      <Filter>Source Files\GiftCards</Filter>
+    <ClCompile Include="Products\ProductByUnit.cpp">
+      <Filter>Source Files\Products</Filter>
     </ClCompile>
-    <ClCompile Include="MultipleCategoriesGiftCard.cpp">
-      <Filter>Source Files\GiftCards</Filter>
+    <ClCompile Include="Products\ProductByWeight.cpp">
+      <Filter>Source Files\Products</Filter>
     </ClCompile>
-    <ClCompile Include="SingleCategoryGiftCard.cpp">
-      <Filter>Source Files\GiftCards</Filter>
-    </ClCompile>
-    <ClCompile Include="Warning.cpp">
+    <ClCompile Include="Users\Cashier.cpp">
       <Filter>Source Files\Users</Filter>
     </ClCompile>
-    <ClCompile Include="Transaction.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Users\Manager.cpp">
+      <Filter>Source Files\Users</Filter>
+    </ClCompile>
+    <ClCompile Include="Users\User.cpp">
+      <Filter>Source Files\Users</Filter>
+    </ClCompile>
+    <ClCompile Include="Users\Warning.cpp">
+      <Filter>Source Files\Users</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\String.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Transaction\Transaction.cpp">
+      <Filter>Source Files\Transaction</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
