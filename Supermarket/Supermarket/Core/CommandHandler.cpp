@@ -899,7 +899,7 @@ void CommandHandler::listFeed(const Vector<String>& inputs)
 void CommandHandler::sell(const Vector<String>& inputs)
 {
 	User* currentUser = this->userManager_.getCurrentUser();
-	if (!currentUser || currentUser->getRole() != UserRole::Cashier)
+	if (!currentUser || currentUser->getRole() == UserRole::None)
 	{
 		std::cout << "Access denied.\n";
 		return;
@@ -1015,7 +1015,13 @@ void CommandHandler::sell(const Vector<String>& inputs)
 	}
 
 	this->productManager_.uploadProducts();
-	this->productManager_.addTransaction(transaction);
+	this->productManager_.addTransaction(transaction); 
+	
+	String logMsg = currentUser->toString() + 
+		" completed transaction " + transaction->getIdString() +
+		" totaling " + 
+		String::toString(transaction->getFinalPriceMinor() / 100.0) + " lv.";
+	Logger::log(logMsg);
 }
 
 void CommandHandler::listTransactions(const Vector<String>& inputs)

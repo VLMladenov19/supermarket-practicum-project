@@ -474,7 +474,6 @@ size_t String::allocateCapacity(size_t size) const
 
 void String::copyFrom(const String& other)
 {
-	// delete[] this->data_;
 	this->capacity_ = other.capacity_;
 	this->size_ = other.size_;
 	this->data_ = new char[this->capacity_ + 1];
